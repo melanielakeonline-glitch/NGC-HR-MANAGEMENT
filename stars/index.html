@@ -390,6 +390,7 @@ figure .rx-bar{justify-content:center}
       <div class="mv" id="mv-team" hidden>
         <div class="card">
           <h3 id="mg-roster-title">Team</h3>
+          <p class="muted" style="margin:0;font-size:13px">The team list follows the Staff Planner: new staff are added automatically and people the planner marks as former are taken off. Melanie, Matteo and Angelica are never on it. You can still add someone by hand below.</p>
           <div class="roster" id="mg-roster"></div>
           <form class="row" id="mg-add">
             <label for="mg-add-name" style="flex:1 1 200px">Add a team member<input type="text" id="mg-add-name" maxlength="40" placeholder="Name"></label>
@@ -994,13 +995,38 @@ async function loadSchedule(){
         if(!name||String(role).toUpperCase()==='MANAGER')continue;const o=(w.open||[])[dd]||0;if(!(o===1||(o===2&&sec!=='lunch')))continue;
         const day=new Date(mon+dd*864e5);const mk=`${day.getUTCFullYear()}-${pad(day.getUTCMonth()+1)}`;if(mk!==docMonth)continue;
         const id=`${mk}_${st}`;(months[id]=months[id]||{})[name]=(months[id][name]||0)+1;}}
-    S.planner={months,published:d.published||''};
+    S.planner={months,published:d.published||'',people:d.people||{}};
   }catch(e){}
 }
 async function loadPhotos(){
   const ids=new Set();S.roster.forEach(p=>p.photoId&&ids.add(p.photoId));S.winners.forEach(w=>w.photoId&&ids.add(w.photoId));S.reviews.forEach(r=>r.imageId&&ids.add(r.imageId));
   const missing=[...ids].filter(id=>!(id in S.photos));if(!missing.length)return;
   const got=await rpc('photos_get',{p:S.code,ids:missing});for(const id of missing)S.photos[id]=(got&&got[id])||'';
+}
+const NOT_ON_TEAM=['melanie','matteo','angelica'];
+let teamSyncing=false;
+async function syncTeamFromSchedule(){
+  if(!S.isAdmin||!S.mgr||teamSyncing||!S.planner.people)return false;
+  const roster=S.roster.map(p=>({...p}));let changed=false;
+  const slug=n=>norm(n).replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'person';
+  for(const st of STORES.map(x=>x.id)){
+    const pp=S.planner.people[st];if(!pp)continue;
+    const skip=new Set([...NOT_ON_TEAM,...(pp.founders||[]).map(x=>norm(x&&x.name))]);
+    const names=[...new Set((pp.staff||[]).map(x=>((x&&x.name)||'').trim()).filter(n=>n&&!skip.has(norm(n))))];
+    const former=new Set((pp.former||[]).map(x=>norm(x&&x.name)));
+    for(const n of names){
+      if(roster.some(p=>p.store===st&&norm(p.name)===norm(n)))continue;
+      const back=roster.find(p=>p.store==='former:'+st&&norm(p.name)===norm(n));
+      if(back){back.store=st;changed=true;continue;}
+      let id=slug(n);if(roster.some(p=>p.id===id))id=id+'-'+st;
+      roster.push({id,name:n,store:st,photoId:null});changed=true;
+    }
+    for(const p of roster)if(p.store===st&&!names.some(n=>norm(n)===norm(p.name))&&(former.has(norm(p.name))||skip.has(norm(p.name)))){p.store='former:'+st;changed=true;}
+  }
+  if(!changed)return false;
+  teamSyncing=true;
+  try{await rpc('mgr_set_staff',{p:S.mgr,people:roster});S.roster=roster;}catch(e){}finally{teamSyncing=false;}
+  return true;
 }
 let refreshing=null;
 async function refresh(){
@@ -1020,6 +1046,7 @@ async function refresh(){
         for(const x of (m.votes||[])){(byVoter[x.voter]=byVoter[x.voter]||{me:x.voter,ballots:{}}).ballots[x.month]={store:x.store,nominee:x.nominee,reason:x.reason};}
         S.votes=Object.values(byVoter);const sc={};for(const x of (m.scores||[]))sc[`${x.month}_${x.store}`]={month:x.month,store:x.store,rows:x.rows||{}};S.scores=sc;}
       await loadPhotos();S.loaded=true;S.offline=false;
+      if(S.mgr&&await syncTeamFromSchedule()){}
     }catch(e){if(e.code==='bad_code')logoutTeam();else if(e.code==='bad_password')logoutManager();else S.offline=true;}
     renderAll();
   })();
@@ -1033,7 +1060,7 @@ async function boot(){
   S.uid=await sha256hex('nonna-stars:dev:'+dev.token);
   try{S.setup=await rpc('is_setup',{});}catch(e){S.setup=null;}
   renderAll();
-  await Promise.all([loadSchedule(),refresh()]);
+  await loadSchedule();await refresh();
   renderAll();
   setInterval(()=>{if(document.visibilityState==='visible')refresh();},20000);
   document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')refresh();});
