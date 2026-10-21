@@ -183,6 +183,7 @@ figure .rx-bar{justify-content:center}
 .rx-pick button{border:0;background:transparent;font-size:20px;line-height:1;padding:4px 5px;border-radius:50%;cursor:pointer}
 .rx-pick button.on{background:#EFE9F7}
 @media (prefers-reduced-motion:no-preference){.rx-pick button:hover{transform:scale(1.25)}}
+.note-remove{display:block;margin:6px 0 0 auto;font-size:12px;color:#5c4f4a}
 #toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:999px;font-weight:600;max-width:calc(100% - 32px);z-index:20}
 @media (prefers-reduced-motion:no-preference){.btn,.seg button,nav.tabs button{transition:background .15s,color .15s,border-color .15s}}
 .gate{max-width:460px;margin:24px auto}
@@ -865,7 +866,8 @@ function stickyNote(it){
     h('div',{class:'to'},`Dear ${personName(it.to)},`),
     h('p',{},it.msg),
     h('div',{class:'sig'},it.kind==='guest'?`♥ from a happy guest`:`— ${from}`),
-    h('small',{},fmtDay(it.at)),reactionBar('s:'+it.id));
+    h('small',{},fmtDay(it.at)),reactionBar('s:'+it.id),
+    S.isAdmin?h('button',{class:'link note-remove',type:'button','aria-label':`Remove this note to ${personName(it.to)}`,onclick:e=>deleteShout(it,e.target)},'Remove'):null);
 }
 function reviewCard(r){
   const n=Math.max(1,Math.min(5,Number(r.stars)||5));
