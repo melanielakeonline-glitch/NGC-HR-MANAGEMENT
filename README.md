@@ -8,11 +8,13 @@ Read-only copy of the Nonna Goes Crazy staff schedule, published for the team.
 - The schedule is edited in the Nonna Staff Planner on claude.ai; each publish exports the current data and replaces `index.html`.
 - No pay rates are included in this site.
 
-## Stars board (runs on Claude, not on Vercel)
+## Stars board (live on Vercel at /stars)
 
-`stars-board/index.html` is a backup of the "Nonna Stars Board" page: shout-outs, Employee of the Month voting, the Hall of fame moodboard and the manager back office.
+Shout-outs, Employee of the Month voting, the Hall of fame moodboard and the manager back office.
 
-- It only works inside Claude, which stores its shout-outs, votes, reactions and photos. Opened anywhere else it shows an empty board.
-- `.vercelignore` keeps this folder out of the Vercel site.
-- Live page: https://claude.ai/artifact/V2oRy4QU9iKui7f2fv7qXi
-- Every change to the board is published to Claude first and then committed here, so this folder always matches the live version.
+- `stars/index.html` — the page (one file, no build step).
+- `stars/config.js` — the Supabase Project URL and publishable key. The publishable key is meant to be public.
+- `stars/supabase-setup.sql` — run once in Supabase > SQL Editor. Safe to run again after changes. Not deployed.
+- Staff open the page and type the team code once; managers log in with the manager password. Both are set the first time the page is opened and can be changed in Back office > Team.
+- Shift counts for the scorecard are read from this site's schedule (`/index.html`), so publishing the schedule also updates the shifts.
+- `stars-board/` — the earlier Claude-hosted version, kept as a backup and not deployed.

@@ -1,0 +1,1047 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Our Stars · Nonna Goes Crazy</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;600;700&family=Caveat:wght@500;700&display=swap">
+<style>
+/* Layout: phone-first single column (max 720px); tomato header band, sticky tabs, one panel per tab */
+:root{
+  --bg:#FBF8F7; --surface:#FFFFFF; --ink:#24191A; --muted:#76615F; --line:#ECDDDA;
+  --tomato:#C8321F; --tomato-soft:#FBE7E3; --on-tomato:#FFFFFF;
+  --basil:#2E7A4C; --basil-soft:#E3F2E8; --gold:#A8740F; --gold-soft:#FBF1DC;
+  --cork:#C99B6B; --cork-2:#B5844F; --cork-3:#DDB487; --wood:#7A4A26; --paper:#FFFDF6; --ink-paper:#2B2320;
+  --hand:"Caveat","Segoe Print","Bradley Hand",cursive;
+  --display:"Bricolage Grotesque","Arial Narrow",system-ui,sans-serif;
+  --body:"Figtree",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#171112; --surface:#221A1A; --ink:#F5EAE8; --muted:#B49F9C; --line:#3A2D2C;
+  --tomato:#FF6E5B; --tomato-soft:#3C1F1B; --on-tomato:#1A0E0D;
+  --basil:#6CCB92; --basil-soft:#1C3326; --gold:#E2B04F; --gold-soft:#33280F; --cork:#6B4A2C; --cork-2:#5A3C22; --cork-3:#7E5A38; --wood:#3E2615; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#171112; --surface:#221A1A; --ink:#F5EAE8; --muted:#B49F9C; --line:#3A2D2C;
+  --tomato:#FF6E5B; --tomato-soft:#3C1F1B; --on-tomato:#1A0E0D;
+  --basil:#6CCB92; --basil-soft:#1C3326; --gold:#E2B04F; --gold-soft:#33280F; --cork:#6B4A2C; --cork-2:#5A3C22; --cork-3:#7E5A38; --wood:#3E2615; color-scheme:dark}
+[hidden]{display:none!important}
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5}
+img{max-width:100%}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:720px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.top{background:var(--tomato);color:var(--on-tomato)}
+.top .wrap{padding-block:28px 22px;display:grid;gap:14px}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;opacity:.88;margin:0}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(40px,10vw,60px);line-height:.92;margin:0;letter-spacing:-.02em}
+.sub{margin:0;max-width:52ch;opacity:.92}
+.seg{display:inline-flex;flex-wrap:wrap;gap:4px;padding:4px;border-radius:999px;background:color-mix(in srgb,var(--on-tomato) 16%,transparent);justify-self:start}
+.seg button{border:0;background:transparent;color:var(--on-tomato);font:600 14px var(--body);padding:7px 14px;border-radius:999px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--on-tomato);color:var(--tomato)}
+nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+nav.tabs .wrap{display:flex;gap:4px;overflow-x:auto}
+nav.tabs button{border:0;background:transparent;color:var(--muted);font:600 15px var(--body);padding:14px 10px 12px;border-bottom:3px solid transparent;cursor:pointer;white-space:nowrap}
+nav.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--tomato)}
+main .wrap{padding-block:20px 56px;display:grid;gap:18px}
+section.panel{display:grid;gap:18px}
+h2{font-family:var(--display);font-weight:800;font-size:26px;line-height:1.1;margin:0;text-wrap:balance}
+h3{font-family:var(--display);font-weight:600;font-size:19px;margin:0}
+.lede{margin:0;color:var(--muted);max-width:60ch}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;display:grid;gap:12px;min-width:0}
+.banner{border-radius:12px;padding:12px 14px;background:var(--gold-soft);color:var(--ink);border:1px solid color-mix(in srgb,var(--gold) 35%,transparent)}
+label{font-weight:600;font-size:13px;display:grid;gap:6px}
+select,textarea,input[type=text],input[type=month],input[type=number]{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+textarea{resize:vertical;min-height:84px}
+:focus-visible{outline:2px solid var(--tomato);outline-offset:2px}
+.check{display:flex;gap:8px;align-items:center;font-weight:500;font-size:14px}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.btn{background:var(--tomato);color:var(--on-tomato);border:0;border-radius:999px;padding:10px 18px;font:700 15px var(--body);cursor:pointer}
+.btn.ghost{background:transparent;color:var(--tomato);border:1.5px solid var(--tomato)}
+.btn.small{padding:6px 12px;font-size:13px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.link{background:none;border:0;color:var(--muted);font:600 13px var(--body);cursor:pointer;padding:2px 4px;text-decoration:underline}
+.muted{color:var(--muted)}
+.tickets{display:flex;flex-wrap:wrap;gap:8px}
+.ticket{display:flex;align-items:baseline;gap:8px;padding:6px 12px;border:1.5px dashed var(--gold);border-radius:8px;background:var(--gold-soft);font-weight:600}
+.ticket b{font-family:var(--display);font-size:18px;color:var(--gold);font-variant-numeric:tabular-nums}
+.list{display:grid}
+.shout{padding:14px 0;border-top:1px solid var(--line);display:grid;gap:4px}
+.shout:first-child{border-top:0;padding-top:0}
+.shout .to{font-family:var(--display);font-weight:600;font-size:20px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.shout p{margin:0;font-size:16px;overflow-wrap:anywhere}
+.meta{font-size:13px;color:var(--muted);display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.chip{font:700 11px var(--body);letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:999px;background:var(--basil-soft);color:var(--basil)}
+.chip.red{background:var(--tomato-soft);color:var(--tomato)}
+.chip.gold{background:var(--gold-soft);color:var(--gold)}
+.empty{padding:18px;border:1.5px dashed var(--line);border-radius:12px;color:var(--muted);text-align:center}
+.star{display:grid;gap:4px;padding:14px 0;border-top:1px solid var(--line)}
+.star:first-child{border-top:0;padding-top:0}
+.star .when{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.star .who{font-family:var(--display);font-weight:800;font-size:24px;line-height:1.1}
+.year{background:var(--tomato);color:var(--on-tomato);border-color:transparent}
+.year .when,.year .muted{color:var(--on-tomato);opacity:.85}
+.scroll{overflow-x:auto;min-width:0}
+table{border-collapse:collapse;width:100%;min-width:680px;font-variant-numeric:tabular-nums}
+th,td{padding:8px 6px;border-bottom:1px solid var(--line);text-align:center;font-size:14px}
+th{font-size:12px;color:var(--muted);font-weight:700;vertical-align:bottom}
+td:first-child,th:first-child{text-align:left}
+td select{padding:6px 4px;width:52px}
+tr.top-pick td{background:var(--basil-soft)}
+tr.ineligible td{opacity:.55}
+.final{font-weight:700}
+.roster{display:flex;flex-wrap:wrap;gap:8px}
+.person{display:flex;gap:6px;align-items:center;padding:4px 6px 4px 12px;border:1px solid var(--line);border-radius:999px;background:var(--bg)}
+.subnav{display:flex;gap:4px;padding:4px;border-radius:999px;background:var(--tomato-soft);justify-self:start;flex-wrap:wrap}
+.subnav button{border:0;background:transparent;color:var(--tomato);font:700 14px var(--body);padding:7px 14px;border-radius:999px;cursor:pointer}
+.subnav button[aria-selected="true"]{background:var(--tomato);color:var(--on-tomato)}
+.mv{display:grid;gap:18px}
+.next{margin:0;font-weight:600;color:var(--basil);flex:1 1 240px;text-align:right}
+.steps{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.steps li{display:flex;gap:10px;align-items:center}
+.steps .mark{width:22px;height:22px;flex:0 0 22px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;font-weight:800;font-size:13px}
+.steps li.done{color:var(--muted)}
+.steps li.done .mark{background:var(--basil);border-color:var(--basil);color:var(--surface)}
+.bar{height:8px;border-radius:999px;background:var(--line);overflow:hidden}
+.bar span{display:block;height:100%;background:var(--basil);width:0}
+table.sc{min-width:1080px}
+td input[type=number]{width:62px;padding:6px}
+td select.missing{border-color:var(--gold);background:var(--gold-soft)}
+tr.note-row td{text-align:left;background:var(--bg)}
+tr.note-row textarea{min-height:64px}
+table.sb{min-width:900px}
+table.sb td.grey{color:var(--muted);opacity:.6}
+table.sb td.win{font-weight:800;color:var(--tomato)}
+@media (max-width:560px){.next{text-align:left}}
+input.from-planner{color:var(--basil);font-weight:700}
+.src{font-size:11px;color:var(--muted);margin-top:2px;white-space:nowrap}
+button.src{font-size:11px;padding:0}
+body.wide main .wrap{max-width:1180px}
+.cork{position:relative;border-radius:16px;padding:26px clamp(12px,3vw,30px) 30px;display:grid;gap:18px;min-width:0;
+  background:radial-gradient(circle at 30% 30%,var(--cork-2) 0 1.2px,transparent 1.7px) 0 0/13px 13px,
+             radial-gradient(circle at 60% 60%,var(--cork-3) 0 1px,transparent 1.6px) 5px 7px/17px 17px,var(--cork);
+  border:10px solid var(--wood);box-shadow:inset 0 0 22px rgba(0,0,0,.3),0 6px 16px rgba(0,0,0,.15)}
+.mb-label{display:flex;justify-content:center}
+.mb-label span{font-family:var(--hand);font-weight:700;font-size:28px;line-height:1.1;background:var(--paper);color:var(--ink-paper);padding:4px 18px;transform:rotate(-1.5deg);box-shadow:0 2px 5px rgba(0,0,0,.25)}
+.mb-year{display:flex;flex-wrap:wrap;gap:30px;justify-content:center}
+.mb-stars{display:flex;flex-wrap:wrap;gap:30px 26px;align-items:flex-start;justify-content:center}
+figure.pinned{margin:0;width:178px;max-width:100%;transform:rotate(var(--r));position:relative;display:grid;gap:10px;justify-items:center}
+figure.year-star{width:min(300px,100%)}
+.frame{width:100%;padding:11px;border-radius:3px;background:linear-gradient(135deg,#8a5a17,#f0cd73 22%,#b8862b 40%,#f7dc8f 58%,#9c6b1e 78%,#e8c063);
+  box-shadow:inset 0 0 0 2px rgba(80,50,10,.55),inset 0 0 0 6px rgba(255,235,170,.35),inset 0 0 0 8px rgba(80,50,10,.35),0 10px 18px rgba(0,0,0,.38)}
+.frame.big{padding:18px}
+.frame .mat{background:#F1E6CF;padding:9px;box-shadow:inset 0 0 9px rgba(60,40,10,.5)}
+.frame img,.frame .ph{display:block;width:100%;aspect-ratio:4/5;object-fit:cover;filter:sepia(.35) saturate(.9) contrast(1.05)}
+.frame .ph{display:grid;place-items:center;align-content:center;gap:4px;background:radial-gradient(circle,#E8D8B6,#C7B085);color:#6B5432;font-family:var(--display);font-weight:800;font-size:58px;line-height:1;filter:none}
+.frame .ph small{font:700 10.5px var(--body);letter-spacing:.08em;text-transform:uppercase}
+.plaque{background:linear-gradient(#ecd38c,#c49a45);color:#3a2a0e;border-radius:4px;padding:6px 12px;text-align:center;display:grid;gap:1px;box-shadow:0 2px 5px rgba(0,0,0,.35);max-width:100%;font-size:12.5px;line-height:1.3}
+.plaque b{font-family:var(--display);font-size:18px;line-height:1.15}
+.plaque small{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;font-weight:700}
+.ribbon{background:var(--tomato);color:var(--on-tomato);font:800 12.5px var(--body);letter-spacing:.08em;text-transform:uppercase;padding:7px 16px;border-radius:4px;box-shadow:0 3px 6px rgba(0,0,0,.3);text-align:center}
+i.pin{position:absolute;top:-9px;left:50%;width:18px;height:18px;margin-left:-9px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#ff9a8a,#d23a26 55%,#7d1a0f);box-shadow:0 3px 4px rgba(0,0,0,.45);z-index:2}
+i.tape{position:absolute;top:-11px;left:50%;width:76px;height:22px;margin-left:-38px;background:rgba(255,255,240,.62);box-shadow:0 1px 2px rgba(0,0,0,.18);transform:rotate(-4deg);z-index:2}
+.mb-filter{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.mb-filter button{border:0;background:var(--paper);color:var(--ink-paper);font:600 13px var(--body);padding:6px 12px;border-radius:999px;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.25)}
+.mb-filter button[aria-pressed="true"]{background:var(--tomato);color:var(--on-tomato)}
+.mb-notes{columns:4 210px;column-gap:20px}
+.sticky,.review{break-inside:avoid;display:inline-block;width:100%;margin:14px 0 8px;position:relative;transform:rotate(var(--r));color:var(--ink-paper)}
+.sticky{background:var(--note);padding:20px 15px 12px;box-shadow:0 7px 12px rgba(0,0,0,.28);border-radius:2px 2px 18px 2px}
+.sticky .to{font-family:var(--hand);font-size:23px;font-weight:700;line-height:1.1}
+.sticky p{font-family:var(--hand);font-size:22px;font-weight:500;line-height:1.15;margin:6px 0;overflow-wrap:anywhere}
+.sticky .sig{font-family:var(--hand);font-size:20px;font-weight:700;text-align:right}
+.sticky small,.review small{display:block;font-size:11px;opacity:.65;text-align:right}
+.review{background:var(--paper);padding:20px 15px 12px;box-shadow:0 7px 12px rgba(0,0,0,.24);border-radius:6px}
+.review .stars{color:#D99A00;letter-spacing:2px;font-size:19px}
+.review p{font-size:15px;font-style:italic;margin:6px 0;overflow-wrap:anywhere}
+.review img{border-radius:4px;margin-top:6px;display:block}
+.review .sig{font-weight:700;font-size:13px}
+.paper-note{background:var(--paper);color:var(--ink-paper);font-family:var(--hand);font-size:23px;line-height:1.2;padding:12px 16px;margin:0 auto;transform:rotate(-1deg);box-shadow:0 3px 6px rgba(0,0,0,.22);max-width:380px;text-align:center}
+.mb-notes .paper-note{display:inline-block;width:100%}
+.person img{width:26px;height:26px;border-radius:50%;object-fit:cover;filter:sepia(.25)}
+@media (prefers-reduced-motion:no-preference){.sticky,.review,figure.pinned{transition:transform .2s ease}.sticky:hover,.review:hover,figure.pinned:hover{transform:rotate(0deg) scale(1.03)}}
+@media (max-width:480px){figure.pinned{width:148px}.mb-stars{gap:24px 14px}}
+.seg.mini{display:inline-flex;gap:2px;padding:3px;border-radius:999px;background:var(--tomato-soft)}
+.seg.mini button{border:0;background:transparent;color:var(--tomato);font:700 12.5px var(--body);padding:5px 11px;border-radius:999px;cursor:pointer}
+.seg.mini button[aria-pressed="true"]{background:var(--tomato);color:var(--on-tomato)}
+.rx-bar{display:flex;flex-wrap:wrap;gap:4px;align-items:center;margin-top:8px;position:relative}
+figure .rx-bar{justify-content:center}
+.rx{display:inline-flex;align-items:center;gap:3px;border:1px solid rgba(43,35,32,.18);background:rgba(255,255,255,.75);color:#2B2320;border-radius:999px;padding:2px 7px;font:600 13px var(--body);cursor:pointer;line-height:1.3}
+.rx b{font-size:11.5px;font-variant-numeric:tabular-nums}
+.rx.on{background:#2B2320;color:#FFFDF6;border-color:#2B2320}
+.rx.add{font-size:12px;color:#5c4f4a}
+.rx:disabled{cursor:default;opacity:.85}
+.rx-pick{display:flex;gap:2px;padding:4px;background:#FFFDF6;border-radius:999px;box-shadow:0 4px 10px rgba(0,0,0,.25)}
+.rx-pick button{border:0;background:transparent;font-size:20px;line-height:1;padding:4px 5px;border-radius:50%;cursor:pointer}
+.rx-pick button.on{background:#FBE7E3}
+@media (prefers-reduced-motion:no-preference){.rx-pick button:hover{transform:scale(1.25)}}
+#toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:999px;font-weight:600;max-width:calc(100% - 32px);z-index:20}
+@media (prefers-reduced-motion:no-preference){.btn,.seg button,nav.tabs button{transition:background .15s,color .15s,border-color .15s}}
+.gate{max-width:460px;margin:24px auto}
+.foot{padding-block:8px 32px;display:flex;gap:12px;align-items:center;color:var(--muted);font-size:13px}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <p class="eyebrow">Nonna Goes Crazy · Team recognition</p>
+    <h1>Our Stars</h1>
+    <p class="sub">Thank a colleague, vote for Employee of the Month, and see who made the wall.</p>
+    <p class="sub" id="whoami" hidden></p>
+    <div class="seg" id="stores" role="group" aria-label="Store"></div>
+  </div>
+</header>
+
+<div class="wrap" id="gate" hidden>
+  <form class="card gate" id="gate-code">
+    <h2>Welcome to Our Stars</h2>
+    <p class="lede">Type the team code from the team chat.</p>
+    <label for="g-code">Team code<input type="password" id="g-code" autocomplete="current-password" required></label>
+    <div class="row"><button class="btn" type="submit">Open the board</button><span class="muted" id="g-msg"></span></div>
+  </form>
+  <form class="card gate" id="gate-me" hidden>
+    <h2>Who are you?</h2>
+    <p class="lede">Pick your name once. This phone remembers it, so your shout-outs and your vote stay yours.</p>
+    <label for="g-me">Your name<select id="g-me" required></select></label>
+    <div class="row"><button class="btn" type="submit">That's me</button></div>
+  </form>
+  <form class="card gate" id="gate-setup" hidden>
+    <h2>Set up the board</h2>
+    <p class="lede">First time here. Choose a manager password that only you know, and a team code to share in the team chat.</p>
+    <label for="s-pw">Manager password (at least 8 characters)<input type="password" id="s-pw" minlength="8" autocomplete="new-password" required></label>
+    <label for="s-pin">Team code (at least 6 characters, easy to type)<input type="text" id="s-pin" minlength="6" autocomplete="off" required placeholder="pasta2026"></label>
+    <div class="row"><button class="btn" type="submit">Save and open the board</button><span class="muted" id="s-msg"></span></div>
+  </form>
+  <div class="card gate" id="gate-config" hidden>
+    <h2>Almost there</h2>
+    <p class="lede">The board is not connected to its database yet.</p>
+  </div>
+</div>
+
+<nav class="tabs" aria-label="Sections">
+  <div class="wrap" role="tablist">
+    <button role="tab" id="tab-shouts" data-tab="shouts" aria-selected="true">Shout-outs</button>
+    <button role="tab" id="tab-vote" data-tab="vote" aria-selected="false">Vote</button>
+    <button role="tab" id="tab-hall" data-tab="hall" aria-selected="false">Hall of fame</button>
+    <button role="tab" id="tab-manager" data-tab="manager" aria-selected="false" hidden>Back office</button>
+  </div>
+</nav>
+
+<main>
+  <div class="wrap">
+    <div id="banner" class="banner" hidden></div>
+    <form class="card" id="mgr-login" hidden>
+      <h3>Manager login</h3>
+      <label for="m-pw">Manager password<input type="password" id="m-pw" autocomplete="current-password"></label>
+      <div class="row"><button class="btn small" type="submit">Log in</button><button class="btn small ghost" type="button" id="m-cancel">Cancel</button><span class="muted" id="m-msg"></span></div>
+    </form>
+    <div id="mgr-hint" class="card" hidden style="grid-template-columns:1fr auto;align-items:center"><span id="mgr-hint-text">You manage this board.</span><button class="btn small" type="button" id="mgr-go">Open back office</button></div>
+
+    <section class="panel" id="panel-shouts">
+      <div>
+        <h2>Shout-out board</h2>
+        <p class="lede">Thank a colleague the moment they make your shift better. Shout-outs also help everyone decide who to vote for.</p>
+      </div>
+      <form class="card" id="so-form">
+        <label for="so-to">Who do you want to thank?
+          <select id="so-to" required></select>
+        </label>
+        <label for="so-msg">What did they do?
+          <textarea id="so-msg" maxlength="280" required placeholder="Covered my Friday close so I could make my exam. Grazie!"></textarea>
+        </label>
+        <label class="check" for="so-guest"><input type="checkbox" id="so-guest"> This is a compliment from a guest</label>
+        <div class="row"><button class="btn" id="so-post" type="submit">Post shout-out</button><span class="muted" id="so-count">0 / 280</span></div>
+      </form>
+      <div class="card">
+        <h3 id="tickets-title">Shout-outs received this month</h3>
+        <div class="tickets" id="tickets"></div>
+      </div>
+      <div class="card">
+        <div class="row" style="justify-content:space-between"><h3 id="list-title">This month</h3><div class="seg mini" id="so-view" role="group" aria-label="Show"><button type="button" data-v="month" aria-pressed="true">This month</button><button type="button" data-v="mine" aria-pressed="false">Mine</button></div></div>
+        <div class="list" id="shout-list"></div>
+      </div>
+    </section>
+
+    <section class="panel" id="panel-vote" hidden>
+      <div>
+        <h2>Employee of the Month vote</h2>
+        <p class="lede">One vote each, for one colleague, with a reason. Votes are anonymous: only the manager sees the count. Your vote is 40% of the result; the manager's scorecard is the other 60%.</p>
+      </div>
+      <div class="card" id="vote-closed"></div>
+      <form class="card" id="vote-form" hidden>
+        <h3 id="vote-title">Voting</h3>
+        <label for="v-me">First, who are you?
+          <select id="v-me" required></select>
+        </label>
+        <label for="v-nominee">Your vote goes to
+          <select id="v-nominee" required></select>
+        </label>
+        <label for="v-reason">Why? One sentence is enough
+          <textarea id="v-reason" maxlength="280" required placeholder="Always the first to help when the kitchen is slammed."></textarea>
+        </label>
+        <div class="row"><button class="btn" id="v-submit" type="submit">Cast my vote</button><span class="muted" id="v-status"></span></div>
+      </form>
+    </section>
+
+    <section class="panel" id="panel-hall" hidden>
+      <div>
+        <h2>Hall of fame</h2>
+        <p class="lede">Our stars, your thank-you notes and the lovely things guests say about us.</p>
+      </div>
+      <div class="cork" id="cork">
+        <div id="mb-year" class="mb-year"></div>
+        <div class="mb-label"><span>Stars of the month</span></div>
+        <div id="mb-stars" class="mb-stars"></div>
+        <div class="mb-label"><span>Love notes</span></div>
+        <div class="mb-filter" id="mb-filter" role="group" aria-label="Show notes from"></div>
+        <div id="mb-notes" class="mb-notes"></div>
+      </div>
+    </section>
+
+    <section class="panel" id="panel-manager" hidden>
+      <div>
+        <h2>Back office</h2>
+        <p class="lede">Only managers see this. Eligibility, scores, the ranking and the yearly scoreboard are calculated for you from the shifts, scorecards, votes and shout-outs.</p>
+      </div>
+      <div class="subnav" role="tablist" aria-label="Back office">
+        <button type="button" role="tab" data-mv="month" aria-selected="true">This month</button>
+        <button type="button" role="tab" data-mv="board" aria-selected="false">Scoreboard</button>
+        <button type="button" role="tab" data-mv="team" aria-selected="false">Team</button>
+        <button type="button" role="tab" data-mv="reviews" aria-selected="false">Reviews</button>
+      </div>
+
+      <div class="mv" id="mv-month">
+        <div class="card">
+          <div class="row" style="justify-content:space-between;align-items:end">
+            <label for="mg-month" style="flex:0 1 200px">Month<input type="month" id="mg-month"></label>
+            <p class="next" id="mg-next"></p>
+          </div>
+          <ol class="steps" id="mg-steps"></ol>
+        </div>
+        <div class="card">
+          <h3>Team vote</h3>
+          <p class="muted" id="mg-vote-status" style="margin:0"></p>
+          <div class="row"><button class="btn small" type="button" id="mg-vote-open">Open voting for 3 days</button><button class="btn small ghost" type="button" id="mg-vote-close">Close voting now</button></div>
+        </div>
+        <div class="card">
+          <div class="row" style="justify-content:space-between"><h3 id="mg-score-title">Scorecard</h3><span class="muted" id="mg-progress-text"></span></div>
+          <div class="bar" aria-hidden="true"><span id="mg-progress"></span></div>
+          <p class="muted" style="margin:0;font-size:13px">Enter shifts first. Eligibility updates by itself: at least 4 shifts, no no-show, no formal warning, did not win last month. Votes and final scores stay hidden until every eligible person is fully scored.</p>
+          <p class="muted" id="mg-sync" style="margin:0;font-size:13px"></p>
+          <div class="scroll"><table id="mg-table" class="sc"></table></div>
+          <p class="muted" id="mg-cast" style="margin:0"></p>
+        </div>
+        <div class="card">
+          <h3>Announce the winner</h3>
+          <p class="muted" id="mg-announce-why" style="margin:0"></p>
+          <label for="mg-winner">Employee of the Month
+            <select id="mg-winner"></select>
+          </label>
+          <div class="row" id="mg-photo-row" hidden><span class="muted" id="mg-photo" style="flex:1 1 220px"></span><button class="btn small ghost" type="button" id="mg-photo-btn">Upload photo</button></div>
+          <p class="banner" id="mg-override" hidden></p>
+          <label for="mg-reason">Reason for Nonna's Wall
+            <input type="text" id="mg-reason" maxlength="160" placeholder="Covered four extra shifts and trained our new runner.">
+          </label>
+          <div class="row"><button class="btn" type="button" id="mg-announce">Announce winner</button><span class="muted" id="mg-announced"></span></div>
+        </div>
+      </div>
+
+      <div class="mv" id="mv-board" hidden>
+        <div class="card">
+          <div class="row" style="justify-content:space-between;align-items:end">
+            <h3 id="sb-title">Scoreboard</h3>
+            <div class="row">
+              <label for="sb-year" style="flex:0 0 110px">Year<select id="sb-year"></select></label>
+              <button class="btn small ghost" type="button" id="sb-csv" hidden style="align-self:end">Download CSV</button>
+            </div>
+          </div>
+          <div class="scroll"><table id="sb-table" class="sb"></table></div>
+          <p class="muted" style="margin:0;font-size:13px">Final score per month. ★ marks Employee of the Month. Grey means not eligible that month. A dot means that month's scorecard is not finished yet. Ranked by wins, then average final score.</p>
+        </div>
+        <div class="card">
+          <h3>Employee of the Year</h3>
+          <p class="next" id="mg-year-suggest" style="margin:0"></p>
+          <label for="mg-year-winner">Winner (only monthly winners can be chosen)<select id="mg-year-winner"></select></label>
+          <label for="mg-year-reason">Reason<input type="text" id="mg-year-reason" maxlength="160" placeholder="The most reliable teammate all year."></label>
+          <div class="row"><button class="btn" type="button" id="mg-year-save">Save Employee of the Year</button><span class="muted" id="mg-year-saved"></span></div>
+        </div>
+      </div>
+
+      <div class="mv" id="mv-reviews" hidden>
+        <form class="card" id="rv-form">
+          <h3>Pin a guest review</h3>
+          <p class="muted" style="margin:0">Copy a lovely Google review, or add a screenshot of it. It goes up on the Hall of fame for this store.</p>
+          <label for="rv-text">What they said
+            <textarea id="rv-text" maxlength="600" placeholder="The team made our anniversary dinner so special. Grazie!"></textarea>
+          </label>
+          <div class="row">
+            <label for="rv-author" style="flex:1 1 160px">Their name<input type="text" id="rv-author" maxlength="40" placeholder="Ana S."></label>
+            <label for="rv-stars" style="flex:0 1 110px">Stars<select id="rv-stars"><option value="5">5 stars</option><option value="4">4 stars</option><option value="3">3 stars</option></select></label>
+            <label for="rv-date" style="flex:0 1 170px">Date<input type="date" id="rv-date"></label>
+          </div>
+          <label for="rv-shot">Screenshot (optional)<input type="file" id="rv-shot" accept="image/png,image/jpeg,image/webp"></label>
+          <p class="muted" id="rv-shot-note" style="margin:0;font-size:13px" hidden>Log in as manager to upload pictures.</p>
+          <div class="row"><button class="btn" type="submit" id="rv-save">Pin to the board</button></div>
+        </form>
+        <div class="card"><h3>Pinned reviews</h3><div id="rv-list" class="list"></div></div>
+      </div>
+      <div class="mv" id="mv-team" hidden>
+        <div class="card">
+          <h3 id="mg-roster-title">Team</h3>
+          <div class="roster" id="mg-roster"></div>
+          <form class="row" id="mg-add">
+            <label for="mg-add-name" style="flex:1 1 200px">Add a team member<input type="text" id="mg-add-name" maxlength="40" placeholder="Name"></label>
+            <button class="btn small" type="submit" style="align-self:end">Add</button>
+          </form>
+        </div>
+        <form class="card" id="codes-form">
+          <h3>Codes</h3>
+          <p class="muted" style="margin:0;font-size:13px">Change the team code when someone leaves the team. Everyone then types the new code once. Leave a field empty to keep it.</p>
+          <div class="row">
+            <label for="c-pin" style="flex:1 1 180px">New team code<input type="text" id="c-pin" minlength="6" autocomplete="off"></label>
+            <label for="c-pw" style="flex:1 1 180px">New manager password<input type="password" id="c-pw" minlength="8" autocomplete="new-password"></label>
+          </div>
+          <div class="row"><button class="btn small" type="submit">Save codes</button></div>
+        </form>
+      </div>
+    </section>
+  </div>
+</main>
+<footer class="wrap foot" id="foot" hidden><button class="link" type="button" id="mgr-login-btn">Manager login</button><button class="link" type="button" id="mgr-logout-btn" hidden>Log out of manager</button></footer>
+<div id="toast" role="status" aria-live="polite" hidden></div>
+
+<script src="/stars/config.js"></script>
+<script>
+const STORES=[{id:'santo-antonio',name:'Santo António'},{id:'store-2',name:'Store 2'}];
+const CRIT=[['rel','Reliability'],['team','Teamwork'],['qual','Quality & hygiene'],['guest','Guest experience'],['extra','Extra mile']];
+const $=s=>document.querySelector(s);
+function h(tag,props,...kids){const el=document.createElement(tag);for(const [k,v] of Object.entries(props||{})){if(v==null||v===false)continue;if(k==='class')el.className=v;else if(k==='text')el.textContent=v;else if(k.startsWith('on'))el.addEventListener(k.slice(2),v);else el.setAttribute(k,v===true?'':v);}for(const c of kids.flat()){if(c==null||c===false)continue;el.append(c.nodeType?c:document.createTextNode(String(c)));}return el;}
+const pad=n=>String(n).padStart(2,'0');
+const monthKey=(d=new Date())=>`${d.getFullYear()}-${pad(d.getMonth()+1)}`;
+const monthName=k=>{const [y,m]=k.split('-').map(Number);return new Date(y,m-1,1).toLocaleDateString('en-GB',{month:'long',year:'numeric'});};
+const shiftMonth=(k,n)=>{const [y,m]=k.split('-').map(Number);return monthKey(new Date(y,m-1+n,1));};
+const fmtDay=iso=>{const d=new Date(iso);return isNaN(d)?'':d.toLocaleDateString('en-GB',{day:'numeric',month:'short'});};
+const lsGet=k=>{try{return localStorage.getItem(k)}catch(e){return null}};
+const lsSet=(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}};
+const rid=()=>Math.random().toString(36).slice(2,10);
+
+const S={store:lsGet('ngc-store')||'santo-antonio',tab:lsGet('ngc-tab')||'shouts',roster:[],settings:{votingOpen:false,votingMonth:monthKey()},shoutDocs:[],myVote:null,winners:[],votes:[],scores:{},uid:null,isOwner:false,isAdmin:false,canWrite:true,offline:false,loaded:false,names:{},mgMonth:monthKey(),voteDirty:false,readOnly:false,mv:lsGet('ngc-mv')||'month',sbYear:String(new Date().getFullYear()),planner:{months:{}},reviews:[],mbMonth:'all',reactions:[],pick:null,editing:null,soView:'month',shouts:[],photos:{},code:null,mgr:null,me:null,setup:null,changingMe:false};
+if(!['month','board','team','reviews'].includes(S.mv))S.mv='month';
+if(!STORES.some(s=>s.id===S.store))S.store='santo-antonio';
+const CFG=window.STARS_CONFIG||{};
+let db=true,user=null;
+const downloads={save:async({filename,data})=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([data],{type:'text/csv'}));a.download=filename;document.body.append(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},1000);return {status:'saved'};}};
+const LS='ngc-stars';
+const dev=(()=>{let d={};try{d=JSON.parse(localStorage.getItem(LS)||'{}')||{};}catch(e){}
+  if(!d.token)d.token=Array.from(crypto.getRandomValues(new Uint8Array(24)),b=>b.toString(16).padStart(2,'0')).join('');return d;})();
+const saveDev=()=>{try{localStorage.setItem(LS,JSON.stringify(dev));}catch(e){}};saveDev();
+async function rpc(fn,args){
+  const headers={'Content-Type':'application/json',apikey:CFG.key};
+  if(String(CFG.key||'').startsWith('eyJ'))headers.Authorization='Bearer '+CFG.key;
+  let res;try{res=await fetch(`${String(CFG.url).replace(/\/$/,'')}/rest/v1/rpc/${fn}`,{method:'POST',headers,body:JSON.stringify(args||{})});}catch(e){throw {code:'offline'};}
+  const txt=await res.text();let body=null;try{body=txt?JSON.parse(txt):null;}catch(e){}
+  if(!res.ok)throw {code:(body&&body.message)||'error',status:res.status};
+  return body;
+}
+async function sha256hex(v){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(v));return Array.from(new Uint8Array(b),x=>x.toString(16).padStart(2,'0')).join('');}
+const blobToDataURL=b=>new Promise((ok,no)=>{const r=new FileReader();r.onload=()=>ok(r.result);r.onerror=no;r.readAsDataURL(b);});
+
+let chain=Promise.resolve();
+const q=fn=>chain=chain.then(fn).catch(e=>{toast(errText(e));}).then(()=>refresh());
+const ERR={bad_code:'That team code is not right.',bad_password:'That manager password is not right.',not_yours:'You can only change your own shout-outs.',voting_closed:'Voting has closed.',no_self_vote:"You can't vote for yourself.",voted_elsewhere:'Someone already voted with this name from another phone. Tell the manager if that was not you.',device_used:'This phone already voted with another name this month.',unknown_person:'That person is no longer on the team list.',reason_needed:'Add a short reason.',offline:"Can't reach the board. Check your connection.",too_large:'That picture is too big.',not_an_image:'Use a JPG, PNG or WebP picture.',code_too_short:'The team code needs at least 6 characters.',password_too_short:'The manager password needs at least 8 characters.',same_codes:'Use a different team code and manager password.',already_setup:'The board is already set up. Use the team code.'};
+function errText(e){const c=e&&e.code;if(c==='bad_code')logoutTeam();if(c==='bad_password')logoutManager();return ERR[c]||"Couldn't save. Check your connection and try again.";}
+let toastT;function toast(msg){const t=$('#toast');t.textContent=msg;t.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>t.hidden=true,3200);}
+
+const storeName=id=>(STORES.find(s=>s.id===id)||{}).name||id;
+const rosterFor=st=>S.roster.filter(p=>p.store===st);
+const personName=id=>id==='manager'?'the manager':((S.roster.find(p=>p.id===id)||{}).name||'Former team member');
+const allItems=()=>S.shouts;
+const canPost=()=>!!S.code&&!!S.uid&&!S.offline;
+function fillSelect(sel,opts,placeholder){const keep=sel.value;sel.replaceChildren(h('option',{value:''},placeholder),...opts.map(([v,t])=>h('option',{value:v},t)));if(opts.some(([v])=>v===keep))sel.value=keep;}
+
+/* ---------- shell ---------- */
+function renderShell(){
+  $('#stores').replaceChildren(...STORES.map(s=>h('button',{type:'button','aria-pressed':String(s.id===S.store),onclick:()=>{S.store=s.id;lsSet('ngc-store',s.id);renderAll();}},s.name)));
+  if(S.tab==='manager'&&!S.isAdmin)S.tab='shouts';
+  for(const b of document.querySelectorAll('nav.tabs button')){const on=b.dataset.tab===S.tab;b.setAttribute('aria-selected',String(on));}
+  for(const t of ['shouts','vote','hall','manager'])$('#panel-'+t).hidden=t!==S.tab;
+  document.body.classList.toggle('wide',S.tab==='hall'||S.tab==='manager');
+  $('#tab-manager').hidden=!S.isAdmin;
+  $('#mgr-hint').hidden=!S.isAdmin||S.tab==='manager';
+  const b=$('#banner');const msg=S.offline&&S.code?"Can't reach the board right now. Check your connection; it retries by itself.":'';
+  b.textContent=msg;b.hidden=!msg;
+  renderGate();
+}
+$('#mgr-go').addEventListener('click',()=>{S.tab='manager';lsSet('ngc-tab','manager');renderAll();window.scrollTo(0,0);});
+document.querySelectorAll('nav.tabs button').forEach(b=>b.addEventListener('click',()=>{S.tab=b.dataset.tab;lsSet('ngc-tab',S.tab);renderAll();}));
+
+/* ---------- shout-outs ---------- */
+function renderShouts(){
+  const staff=rosterFor(S.store);const M=monthKey();
+  fillSelect($('#so-to'),staff.map(p=>[p.id,p.name]),staff.length?'Choose a colleague':'No team members yet');
+  const dis=!canPost()||!staff.length;
+  for(const el of $('#so-form').querySelectorAll('select,textarea,input,button'))el.disabled=dis;
+  const items=allItems().filter(it=>it.store===S.store&&it.month===M).sort((a,b)=>(b.at||'').localeCompare(a.at||''));
+  const counts={};items.forEach(it=>counts[it.to]=(counts[it.to]||0)+1);
+  $('#tickets-title').textContent=`Shout-outs received in ${monthName(M)}`;
+  const tix=Object.entries(counts).sort((a,b)=>b[1]-a[1]);
+  $('#tickets').replaceChildren(...(tix.length?tix.map(([id,n])=>h('span',{class:'ticket'},personName(id),h('b',{},String(n)))):[h('span',{class:'muted'},'No shout-outs yet this month.')]));
+  const mineAll=allItems().filter(it=>it.author===S.uid).sort((a,b)=>(b.at||'').localeCompare(a.at||''));
+  $('#so-view').hidden=!S.uid;
+  for(const b of document.querySelectorAll('#so-view button'))b.setAttribute('aria-pressed',String(b.dataset.v===S.soView));
+  const list=S.soView==='mine'?mineAll:items;
+  $('#list-title').textContent=S.soView==='mine'?'My shout-outs':monthName(M);
+  if(!S.loaded&&!S.offline){$('#shout-list').replaceChildren(h('div',{class:'empty'},'Loading the board…'));return;}
+  if(!list.length){$('#shout-list').replaceChildren(h('div',{class:'empty'},S.soView==='mine'?"You haven't posted a shout-out yet.":`No shout-outs yet for ${monthName(M)}. Be the first: thank someone for a great shift.`));return;}
+  resolveNames([...new Set(list.map(it=>it.author))]);
+  $('#shout-list').replaceChildren(...list.map(it=>{
+    const mine=it.author===S.uid;const from=mine?'You':(it.from?personName(it.from):'A teammate');
+    if(mine&&S.editing===it.id){
+      const prevTa=document.getElementById('edit-'+it.id);const ta=h('textarea',{id:'edit-'+it.id,maxlength:'280','aria-label':'Edit your shout-out'},prevTa?prevTa.value:it.msg);
+      return h('article',{class:'shout'},h('div',{class:'to'},'To '+personName(it.to)),ta,
+        h('div',{class:'row'},h('button',{class:'btn small',type:'button',onclick:()=>saveEdit(it,ta.value)},'Save'),h('button',{class:'btn small ghost',type:'button',onclick:()=>{S.editing=null;renderShouts();}},'Cancel')));
+    }
+    const acts=[];
+    if(mine&&canPost())acts.push(h('button',{class:'link',type:'button',onclick:()=>{S.editing=it.id;renderShouts();const t=document.getElementById('edit-'+it.id);if(t)t.focus();}},'Edit'));
+    if(mine||S.isOwner)acts.push(h('button',{class:'link',type:'button',onclick:e=>deleteShout(it,e.target)},'Remove'));
+    return h('article',{class:'shout'},
+      h('div',{class:'to'},'To '+personName(it.to),it.kind==='guest'?h('span',{class:'chip'},'Guest compliment'):null),
+      h('p',{},it.msg),
+      h('div',{class:'meta'},h('span',{},`From ${from} · ${fmtDay(it.at)}${it.edited?' · edited':''}`),...acts));
+  }));
+}
+function saveEdit(it,val){
+  const msg=val.trim();if(!msg){toast('A shout-out needs a message. Use Remove to delete it.');return;}
+  q(async()=>{await rpc('edit_shout',{p:S.code,token:dev.token,shout_id:it.id,msg});S.editing=null;toast('Shout-out updated');});
+}
+function resolveNames(){}
+document.querySelectorAll('#so-view button').forEach(b=>b.addEventListener('click',()=>{S.soView=b.dataset.v;S.editing=null;renderShouts();}));
+$('#so-msg').addEventListener('input',e=>$('#so-count').textContent=`${e.target.value.length} / 280`);
+$('#so-form').addEventListener('submit',e=>{
+  e.preventDefault();if(!canPost())return;
+  const to=$('#so-to').value,msg=$('#so-msg').value.trim();
+  if(!to||!msg){toast('Pick a colleague and write a short thank-you.');return;}
+  $('#so-post').disabled=true;
+  q(async()=>{await rpc('post_shout',{p:S.code,token:dev.token,store_id:S.store,to_id:to,from_id:S.me||'',msg,kind:$('#so-guest').checked?'guest':'team'});
+    $('#so-msg').value='';$('#so-guest').checked=false;$('#so-count').textContent='0 / 280';toast('Shout-out posted');}).then(()=>{$('#so-post').disabled=!canPost();});
+});
+function deleteShout(it,btn){
+  if(btn&&btn.dataset.confirm!=='1'){btn.dataset.confirm='1';btn.textContent='Tap again to remove';setTimeout(()=>{if(btn.isConnected){btn.dataset.confirm='';btn.textContent='Remove';}},4000);return;}
+  q(async()=>{await rpc('delete_shout',{p:(it.author!==S.uid&&S.isAdmin)?S.mgr:S.code,token:dev.token,shout_id:it.id});toast('Shout-out removed');});
+}
+
+/* ---------- vote ---------- */
+function renderVote(){
+  const M=S.settings.votingMonth||monthKey();const open=isVotingOpen();
+  const ballot=S.myVote&&S.myVote.ballots&&S.myVote.ballots[M];
+  const closed=$('#vote-closed'),form=$('#vote-form');
+  form.hidden=!open;closed.hidden=open;
+  if(!open){
+    closed.replaceChildren(h('h3',{},'Voting is closed'),h('p',{class:'muted',style:'margin:0'},ballot?`Thanks, your vote for ${personName(ballot.nominee)} in ${monthName(M)} was counted.`:'Voting opens for three days in the last week of each month. You will see the form here when it opens.'));
+    return;
+  }
+  if(S.me==='manager'){form.hidden=true;closed.hidden=false;closed.replaceChildren(h('h3',{},"Managers don't vote"),h('p',{class:'muted',style:'margin:0'},'The team vote is for staff. Your scorecard counts for 60% of the result.'));return;}
+  $('#vote-title').textContent=`Vote for ${monthName(M)} · ${storeName(S.store)}`;
+  const staff=rosterFor(S.store);
+  const meSel=$('#v-me');
+  fillSelect(meSel,staff.map(p=>[p.id,p.name]),'Choose your name');
+  if(!S.voteDirty&&S.me&&document.activeElement!==meSel&&staff.some(p=>p.id===S.me))meSel.value=S.me;
+  const nomSel=$('#v-nominee');
+  fillSelect(nomSel,staff.filter(p=>p.id!==meSel.value).map(p=>[p.id,p.name]),'Choose a colleague');
+  if(!S.voteDirty&&ballot&&ballot.store===S.store){nomSel.value=ballot.nominee;if(document.activeElement!==$('#v-reason'))$('#v-reason').value=ballot.reason||'';}
+  const dis=!canPost();for(const el of form.querySelectorAll('select,textarea,button'))el.disabled=dis;
+  $('#v-submit').textContent=ballot?'Update my vote':'Cast my vote';
+  const until=S.settings.closesAt?` Voting closes ${fmtWhen(S.settings.closesAt)}.`:'';
+  $('#v-status').textContent=(ballot?`Your vote for ${personName(ballot.nominee)} is in. You can change it until voting closes.`:'')+until;
+}
+['#v-me','#v-nominee','#v-reason'].forEach(id=>$(id).addEventListener('input',()=>{S.voteDirty=true;if(id==='#v-me')renderVote();}));
+$('#vote-form').addEventListener('submit',e=>{
+  e.preventDefault();if(!canPost())return;
+  if(!isVotingOpen()){toast('Voting has closed.');renderVote();return;}
+  const M=S.settings.votingMonth;const me=$('#v-me').value,nominee=$('#v-nominee').value,reason=$('#v-reason').value.trim();
+  if(!me||!nominee||!reason){toast('Choose your name, a colleague and add a reason.');return;}
+  if(me===nominee){toast("You can't vote for yourself.");return;}
+  $('#v-submit').disabled=true;
+  q(async()=>{await rpc('cast_vote',{p:S.code,token:dev.token,store_id:S.store,voter:me,nominee,reason});S.voteDirty=false;toast('Vote saved');}).then(()=>{$('#v-submit').disabled=!canPost();renderVote();});
+});
+
+/* ---------- hall of fame ---------- */
+/* ---------- back office ---------- */
+const MIN_SHIFTS=4;
+const norm=v=>String(v||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim().toLowerCase();
+function plannerShifts(M,st,name){const m=(S.planner.months||{})[`${M}_${st}`];if(!m)return null;const n=norm(name);for(const [k,v] of Object.entries(m))if(norm(k)===n)return Number(v)||0;return 0;}
+const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const fmtWhen=iso=>{const d=new Date(iso);return isNaN(d)?'':d.toLocaleString('en-GB',{weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});};
+const daysIn=k=>{const [y,m]=k.split('-').map(Number);return new Date(y,m,0).getDate();};
+const lastWeekStart=k=>{const [y,m]=k.split('-').map(Number);return new Date(y,m-1,daysIn(k)-6).toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'});};
+const isVotingOpen=()=>!!S.settings.votingOpen&&(!S.settings.closesAt||Date.now()<Date.parse(S.settings.closesAt));
+function voteState(M){
+  const s=S.settings;
+  if(s.votingMonth===M){if(isVotingOpen())return 'open';return s.closesAt?'closed':'not-started';}
+  if(s.votingMonth&&M<s.votingMonth)return 'closed';
+  return 'not-started';
+}
+function eligibility(r,isPrevWin){
+  if(r.shifts==null||r.shifts==='')return {ok:false,pending:true,why:'Enter shifts'};
+  const n=Number(r.shifts);
+  if(n<MIN_SHIFTS)return {ok:false,why:`Only ${n} shift${n===1?'':'s'}`};
+  if(r.noShow)return {ok:false,why:'No-show'};
+  if(r.warning)return {ok:false,why:'Formal warning'};
+  if(isPrevWin)return {ok:false,why:'Won last month'};
+  return {ok:true,why:'Eligible'};
+}
+function tally(M,st,includeFormer){
+  const votes={};let cast=0;
+  for(const v of S.votes){const b=v.ballots&&v.ballots[M];if(b&&b.store===st&&b.nominee){votes[b.nominee]=(votes[b.nominee]||0)+1;cast++;}}
+  const shouts={};for(const it of allItems())if(it.month===M&&it.store===st)shouts[it.to]=(shouts[it.to]||0)+1;
+  const rows=(S.scores[`${M}_${st}`]||{}).rows||{};
+  const prev=S.winners.find(w=>w.id===`${shiftMonth(M,-1)}_${st}`);const prevWin=prev&&prev.staffId;
+  // month view: everyone on the team now; scoreboard: only people who have a row that month
+  const people=includeFormer?Object.keys(rows).map(id=>({id,name:personName(id)})):rosterFor(st).map(p=>({id:p.id,name:p.name}));
+  const list=people.map(p=>{const r0=rows[p.id]||{};const manual=r0.shifts!=null&&r0.shifts!=='';const ps=plannerShifts(M,st,p.name);
+    const r={...r0,shifts:manual?r0.shifts:ps};const src=manual?'manual':(ps!=null?'planner':null);const mgr=CRIT.reduce((a,[k])=>a+(Number(r[k])||0),0);
+    const el=eligibility(r,p.id===prevWin);const vt=votes[p.id]||0;
+    const scored=CRIT.every(([k])=>Number(r[k])>0);
+    const final=0.6*mgr/25*100+0.4*(cast?vt/cast:0)*100;
+    return {p,r,mgr,votes:vt,shouts:shouts[p.id]||0,el,eligible:el.ok,scored,final,src,plannerVal:ps};});
+  const elig=list.filter(x=>x.eligible);
+  const shiftsDone=list.length>0&&list.every(x=>!x.el.pending);
+  const scoredCount=elig.filter(x=>x.scored).length;
+  const complete=shiftsDone&&elig.length>0&&scoredCount===elig.length;
+  const ranked=[...elig].sort((a,b)=>b.final-a.final||b.votes-a.votes||b.shouts-a.shouts);
+  return {list,cast,ranked,shouts,elig,shiftsDone,scoredCount,complete};
+}
+function monthSteps(M,st){
+  const t=tally(M,st);const vs=voteState(M);const W=S.winners.find(w=>w.id===`${M}_${st}`)||{};
+  return [
+    {done:t.shiftsDone,label:'Shifts filled in (from the team schedule where available)',todo:'Fill in the missing shifts in the scorecard'},
+    {done:vs!=='not-started',label:vs==='open'?`Team vote is open until ${fmtWhen(S.settings.closesAt)}`:'Open the team vote',todo:`Open the team vote (last week starts ${lastWeekStart(M)})`},
+    {done:t.complete,label:`Score every eligible person (${t.scoredCount} of ${t.elig.length})`,todo:`Score every eligible person (${t.scoredCount} of ${t.elig.length} done)`},
+    {done:vs==='closed',label:'Team vote closed',todo:vs==='open'?`Wait for the vote to close (${fmtWhen(S.settings.closesAt)})`:'Close the team vote'},
+    {done:!!W.staffId,label:W.staffId?`Winner announced: ${personName(W.staffId)}`:'Announce the winner',todo:'Announce the winner'},
+  ];
+}
+function nextStepText(M,st){const n=monthSteps(M,st).find(s=>!s.done);return n?n.todo:`Everything is done for ${monthName(M)}.`;}
+
+function saveRow(M,st,pid,patch){
+  const key=`${M}_${st}`;const doc=S.scores[key]||{month:M,store:st,rows:{}};
+  const rows=JSON.parse(JSON.stringify(doc.rows||{}));rows[pid]={...(rows[pid]||{}),...patch};
+  const body={month:M,store:st,rows};S.scores={...S.scores,[key]:body};renderManager();
+  q(()=>rpc('mgr_save_score',{p:S.mgr,month_key:M,store_id:st,score_rows:rows}));
+}
+const openNotes=new Set();
+function renderManager(){
+  if(!S.isAdmin)return;
+  for(const b of document.querySelectorAll('.subnav button'))b.setAttribute('aria-selected',String(b.dataset.mv===S.mv));
+  for(const v of ['month','board','team','reviews'])$('#mv-'+v).hidden=v!==S.mv;
+  renderMonth();renderBoard();renderTeam();renderReviews();
+}
+function renderMonth(){
+  const M=S.mgMonth,st=S.store;const mi=$('#mg-month');if(document.activeElement!==mi)mi.value=M;
+  const t=tally(M,st);const vs=voteState(M);const steps=monthSteps(M,st);
+  $('#mg-steps').replaceChildren(...steps.map(s=>h('li',{class:s.done?'done':''},h('span',{class:'mark','aria-hidden':'true'},s.done?'✓':''),h('span',{},s.done?s.label:s.todo))));
+  $('#mg-next').textContent='Next: '+nextStepText(M,st);
+  // vote
+  const other=S.settings.votingMonth&&S.settings.votingMonth!==M&&isVotingOpen();
+  $('#mg-vote-status').textContent=vs==='open'?`Open for ${monthName(M)}. It closes by itself on ${fmtWhen(S.settings.closesAt)}.`
+    :vs==='closed'?`Closed for ${monthName(M)}.`+(S.settings.votingMonth===M&&S.settings.closesAt?` It closed on ${fmtWhen(S.settings.closesAt)}.`:'')
+    :other?`Voting is currently open for ${monthName(S.settings.votingMonth)}. Close it before opening ${monthName(M)}.`
+    :`Not opened yet. The last week of ${monthName(M)} starts ${lastWeekStart(M)}.`;
+  $('#mg-vote-open').hidden=vs==='open';$('#mg-vote-open').disabled=!!other;
+  $('#mg-vote-open').textContent=vs==='closed'?'Reopen for 3 days':'Open voting for 3 days';
+  $('#mg-vote-close').hidden=vs!=='open';
+  // scorecard
+  $('#mg-score-title').textContent=`Scorecard · ${monthName(M)} · ${storeName(st)}`;
+  const pm=(S.planner.months||{})[`${M}_${st}`];
+  $('#mg-sync').textContent=(pm?'Shifts come from the team schedule site.':'No shifts on the team schedule site for this month yet, so type them in yourself.')+(S.planner.published?` Schedule last published ${S.planner.published}.`:'')+' Typing a number overrides the schedule.';
+  const pct=t.elig.length?Math.round(t.scoredCount/t.elig.length*100):0;
+  $('#mg-progress').style.width=pct+'%';
+  $('#mg-progress-text').textContent=t.shiftsDone?`${t.scoredCount} of ${t.elig.length} eligible scored`:'Shifts still missing';
+  const show=t.complete;const top=show?t.ranked[0]:null;
+  const fe=document.activeElement;const focus=fe&&fe.id&&fe.id.startsWith('sc-')?{id:fe.id,val:fe.value,tag:fe.tagName,ss:fe.selectionStart,se:fe.selectionEnd}:null;
+  const head=h('tr',{},h('th',{},'Team member'),h('th',{},'Shifts'),h('th',{},'No-show'),h('th',{},'Warning'),...CRIT.map(([,n])=>h('th',{},n)),h('th',{},'Manager /25'),h('th',{},'Status'),h('th',{},'Votes'),h('th',{},'Shout-outs'),h('th',{},'Final /100'),h('th',{},''));
+  const rowsEl=[];
+  for(const x of t.list){
+    const pid=x.p.id;
+    const shiftsIn=h('input',{type:'number',min:'0',max:'62',inputmode:'numeric',id:`sc-${pid}-shifts`,class:x.src==='planner'?'from-planner':'','aria-label':`${x.p.name} shifts`,title:x.src==='planner'?'From the team schedule. Type a number to override it.':'',value:x.r.shifts!=null&&x.r.shifts!==''?String(x.r.shifts):'',onchange:e=>{const v=e.target.value.trim();saveRow(M,st,pid,{shifts:v===''?null:Math.max(0,Math.round(Number(v)))});}});
+    const srcNote=x.src==='planner'?h('div',{class:'src'},'schedule')
+      :(x.src==='manual'&&x.plannerVal!=null&&Number(x.plannerVal)!==Number(x.r.shifts))?h('button',{type:'button',class:'link src',onclick:()=>saveRow(M,st,pid,{shifts:null})},`use schedule (${x.plannerVal})`)
+      :x.src==='manual'?h('div',{class:'src'},'typed'):null;
+    const shifts=h('div',{},shiftsIn,srcNote);
+    const ns=h('input',{type:'checkbox',id:`sc-${pid}-noshow`,'aria-label':`${x.p.name} no-show without notice`,checked:!!x.r.noShow,onchange:e=>saveRow(M,st,pid,{noShow:e.target.checked})});
+    const wn=h('input',{type:'checkbox',id:`sc-${pid}-warn`,'aria-label':`${x.p.name} formal warning`,checked:!!x.r.warning,onchange:e=>saveRow(M,st,pid,{warning:e.target.checked})});
+    const sels=CRIT.map(([k,n])=>{const s=h('select',{id:`sc-${pid}-${k}`,'aria-label':`${x.p.name} ${n}`,class:(x.eligible&&!x.r[k])?'missing':'',onchange:e=>saveRow(M,st,pid,{[k]:e.target.value?Number(e.target.value):null})},h('option',{value:''},'–'),...[1,2,3,4,5].map(n2=>h('option',{value:String(n2)},String(n2))));s.value=x.r[k]?String(x.r[k]):'';return h('td',{},s);});
+    const status=h('span',{class:'chip '+(x.eligible?'':(x.el.pending?'gold':'red'))},x.el.why);
+    const hasNote=!!(x.r.note&&x.r.note.trim());
+    const nb=h('button',{type:'button',class:'link',id:`sc-${pid}-nbtn`,'aria-expanded':String(openNotes.has(pid)),onclick:()=>{openNotes.has(pid)?openNotes.delete(pid):openNotes.add(pid);renderMonth();}},hasNote?'Notes ●':'Notes');
+    rowsEl.push(h('tr',{class:(top&&pid===top.p.id?'top-pick ':'')+(x.eligible||x.el.pending?'':'ineligible')},
+      h('td',{},x.p.name),h('td',{},shifts),h('td',{},ns),h('td',{},wn),...sels,
+      h('td',{},String(x.mgr)),h('td',{},status),
+      h('td',{class:'locked'},show?String(x.votes):'–'),h('td',{},String(x.shouts)),
+      h('td',{class:'final'},show&&x.eligible?x.final.toFixed(1):'–'),h('td',{},nb)));
+    if(openNotes.has(pid))rowsEl.push(h('tr',{class:'note-row'},h('td',{colspan:'16'},
+      h('label',{for:`sc-${pid}-note`},`Reasons for ${x.p.name}'s scores (only managers see this)`,
+        h('textarea',{id:`sc-${pid}-note`,maxlength:'1000',placeholder:'Reliability 4: late twice. Extra mile 5: covered three closes.',onchange:e=>saveRow(M,st,pid,{note:e.target.value})},x.r.note||'')))));
+  }
+  $('#mg-table').replaceChildren(h('thead',{},head),h('tbody',{},...(rowsEl.length?rowsEl:[h('tr',{},h('td',{colspan:'16'},'Add team members in the Team tab to start scoring.'))])));
+  if(focus){const el=document.getElementById(focus.id);if(el){if(focus.tag!=='SELECT'&&el.type!=='checkbox')el.value=focus.val;el.focus();try{if(el.setSelectionRange&&focus.ss!=null)el.setSelectionRange(focus.ss,focus.se);}catch(e){}}}
+  $('#mg-cast').textContent=show?`${t.cast} vote${t.cast===1?'':'s'} cast. `+(top?`Top score: ${top.p.name} with ${top.final.toFixed(1)}.`:'Nobody is eligible this month.')
+    :`Votes and final scores unlock when the scorecard is complete.`;
+  // announce
+  const W=S.winners.find(w=>w.id===`${M}_${st}`)||{};
+  const canAnnounce=t.complete&&vs==='closed';
+  $('#mg-announce-why').textContent=canAnnounce?'The top score is selected for you. Pick someone else only with a written reason.'
+    :!t.complete?'Available once the scorecard is complete and the vote has closed.':'Available once the team vote has closed.';
+  const ws=$('#mg-winner');fillSelect(ws,t.ranked.map((x,i)=>[x.p.id,`${i+1}. ${x.p.name} (${x.final.toFixed(1)})`]),t.ranked.length?'Choose the winner':'Nobody eligible yet');
+  if(document.activeElement!==ws&&!ws.dataset.touched)ws.value=W.staffId&&t.ranked.some(x=>x.p.id===W.staffId)?W.staffId:(top?top.p.id:'');
+  const rs=$('#mg-reason');if(document.activeElement!==rs&&!rs.dataset.touched)rs.value=W.reason||'';
+  const over=canAnnounce&&top&&ws.value&&ws.value!==top.p.id;
+  $('#mg-override').hidden=!over;
+  if(over)$('#mg-override').textContent=`You are choosing someone other than the top score (${top.p.name}). Write the reason you will explain to the team before announcing.`;
+  for(const el of [ws,rs,$('#mg-announce')])el.disabled=!canAnnounce;
+  $('#mg-announced').textContent=W.staffId?`Announced: ${personName(W.staffId)}`:'';
+  const selId=ws.value;$('#mg-photo-row').hidden=!selId;
+  if(selId){const has=!!photoOf(selId,W.staffId===selId?W:null);
+    $('#mg-photo').textContent=has?`${personName(selId)}'s photo is ready for the Hall of fame frame.`:`No photo of ${personName(selId)} yet. The frame shows their initial until you add one.`;
+    $('#mg-photo-btn').textContent=has?'Change photo':'Upload photo';$('#mg-photo-btn').hidden=!assets;}
+  $('#mg-announce').textContent=W.staffId?'Update winner':'Announce winner';
+  renderHint();
+}
+function boardData(Y,st){
+  const ids=new Map(rosterFor(st).map(p=>[p.id,p.name]));
+  const months=[];
+  for(let i=1;i<=12;i++){const M=`${Y}-${pad(i)}`;if(S.scores[`${M}_${st}`]){const t=tally(M,st,true);t.list.forEach(x=>{if(!ids.has(x.p.id))ids.set(x.p.id,x.p.name);});months.push([i,M,t]);}else months.push([i,M,null]);}
+  const rows=[...ids].map(([id,name])=>{
+    const cells=months.map(([i,M,t])=>{if(!t)return {v:''};const x=t.list.find(r=>r.p.id===id);if(!x)return {v:''};
+      const won=(S.winners.find(w=>w.id===`${M}_${st}`)||{}).staffId===id;
+      if(!t.complete)return {v:'·',cls:'muted'};
+      if(!x.eligible)return {v:x.mgr?x.final.toFixed(0):'',cls:'grey',raw:null};
+      return {v:(won?'★ ':'')+x.final.toFixed(0),cls:won?'win':'',raw:x.final,mgr:x.mgr};});
+    const finals=cells.filter(c=>c.raw!=null);
+    const wins=S.winners.filter(w=>w.type==='month'&&w.store===st&&w.staffId===id&&w.month&&w.month.startsWith(Y+'-')).length;
+    const avg=finals.length?finals.reduce((a,c)=>a+c.raw,0)/finals.length:null;
+    const avgMgr=finals.length?finals.reduce((a,c)=>a+c.mgr,0)/finals.length:null;
+    return {id,name,cells,wins,avg,avgMgr,elig:finals.length};
+  }).sort((a,b)=>b.wins-a.wins||(b.avg??-1)-(a.avg??-1)||a.name.localeCompare(b.name));
+  return {rows};
+}
+function renderBoard(){
+  const st=S.store;const years=new Set();const thisYear=new Date().getFullYear();
+  for(let y=2026;y<=thisYear+3;y++)years.add(String(y)); // always offer the coming years too
+  Object.keys(S.scores).forEach(k=>{if(k.endsWith('_'+st))years.add(k.slice(0,4));});
+  S.winners.forEach(w=>{if(w.store===st&&w.month)years.add(w.month.slice(0,4));});
+  const ys=[...years].sort().reverse();if(!ys.includes(S.sbYear))S.sbYear=String(thisYear);
+  const sel=$('#sb-year');fillSelect(sel,ys.map(y=>[y,y]),'Year');sel.value=S.sbYear;
+  const Y=S.sbYear;$('#sb-title').textContent=`Scoreboard ${Y} · ${storeName(st)}`;
+  const {rows}=boardData(Y,st);
+  const head=h('tr',{},h('th',{},'Team member'),...MONTHS.map(m=>h('th',{},m)),h('th',{},'Wins'),h('th',{},'Avg final'),h('th',{},'Avg manager /25'),h('th',{},'Months eligible'));
+  $('#sb-table').replaceChildren(h('thead',{},head),h('tbody',{},...(rows.length?rows.map((r,i)=>h('tr',{class:i===0&&r.wins?'top-pick':''},h('td',{},r.name),...r.cells.map(c=>h('td',{class:c.cls||''},c.v)),
+    h('td',{class:'final'},String(r.wins)),h('td',{},r.avg!=null?r.avg.toFixed(1):'–'),h('td',{},r.avgMgr!=null?r.avgMgr.toFixed(1):'–'),h('td',{},String(r.elig)))):[h('tr',{},h('td',{colspan:'17'},'No scores yet for this year.'))])));
+  $('#sb-csv').hidden=!downloads;
+  // employee of the year
+  const winners=rows.filter(r=>r.wins>0);const sug=winners[0];
+  $('#mg-year-suggest').textContent=sug?`Suggested by the numbers: ${sug.name}, ${sug.wins} win${sug.wins===1?'':'s'}, average final ${sug.avg!=null?sug.avg.toFixed(1):'–'}.`:`No Employee of the Month winners in ${Y} yet.`;
+  const yw=$('#mg-year-winner');fillSelect(yw,winners.map(r=>[r.id,`${r.name} (${r.wins} win${r.wins===1?'':'s'})`]),winners.length?'Choose a monthly winner':'No monthly winners that year');
+  const YW=S.winners.find(w=>w.id===`year-${Y}_${st}`);
+  if(document.activeElement!==yw&&!yw.dataset.touched)yw.value=YW?YW.staffId:(sug?sug.id:'');
+  const yr=$('#mg-year-reason');if(document.activeElement!==yr&&!yr.dataset.touched)yr.value=YW?YW.reason||'':'';
+  $('#mg-year-saved').textContent=YW?`Saved: ${personName(YW.staffId)}`:'';
+  $('#mg-year-save').disabled=!winners.length;
+}
+function renderTeam(){
+  $('#mg-roster-title').textContent=`Team at ${storeName(S.store)}`;
+  const staff=rosterFor(S.store);
+  $('#mg-roster').replaceChildren(...(staff.length?staff.map(p=>h('span',{class:'person'},
+    p.photoId&&S.photos[p.photoId]?h('img',{src:S.photos[p.photoId],alt:''}):null,p.name,
+    assets?h('button',{class:'link',type:'button','aria-label':`${p.photoId?'Change':'Add'} photo of ${p.name}`,onclick:()=>pickPhoto(p.id,null)},p.photoId?'Change photo':'Add photo'):null,
+    h('button',{class:'link',type:'button','aria-label':`Remove ${p.name}`,onclick:e=>removePerson(p,e.target)},'Remove'))):[h('span',{class:'muted'},'No team members yet.')]));
+}
+function renderHint(){
+  if(!S.isAdmin)return;
+  $('#mgr-hint-text').textContent=`Next for ${monthName(S.mgMonth)} at ${storeName(S.store)}: ${nextStepText(S.mgMonth,S.store)}`;
+}
+document.querySelectorAll('.subnav button').forEach(b=>b.addEventListener('click',()=>{S.mv=b.dataset.mv;lsSet('ngc-mv',S.mv);renderManager();}));
+['#mg-winner','#mg-reason','#mg-year-winner','#mg-year-reason'].forEach(id=>$(id).addEventListener('input',e=>{e.target.dataset.touched='1';if(id==='#mg-winner')renderMonth();}));
+$('#mg-month').addEventListener('change',e=>{if(/^\d{4}-\d{2}$/.test(e.target.value)){S.mgMonth=e.target.value;openNotes.clear();['#mg-winner','#mg-reason'].forEach(i=>delete $(i).dataset.touched);renderManager();}});
+$('#sb-year').addEventListener('change',e=>{S.sbYear=e.target.value;['#mg-year-winner','#mg-year-reason'].forEach(i=>delete $(i).dataset.touched);renderBoard();});
+$('#mg-vote-open').addEventListener('click',()=>{
+  const now=new Date();const body={votingOpen:true,votingMonth:S.mgMonth,openedAt:now.toISOString(),closesAt:new Date(now.getTime()+3*864e5).toISOString()};
+  q(async()=>{await rpc('mgr_set_voting',{p:S.mgr,voting:body});toast(`Voting open for ${monthName(body.votingMonth)} until ${fmtWhen(body.closesAt)}`);});
+});
+$('#mg-vote-close').addEventListener('click',()=>{
+  const body={...S.settings,votingOpen:false,closesAt:new Date().toISOString()};
+  q(async()=>{await rpc('mgr_set_voting',{p:S.mgr,voting:body});toast('Voting closed');});
+});
+function winnerDoc(id){const W=S.winners.find(w=>w.id===id);if(!W)return {};const {id:_,...rest}=W;return rest;}
+$('#mg-photo-btn').addEventListener('click',()=>{const pid=$('#mg-winner').value;if(!pid)return;const W=S.winners.find(w=>w.id===`${S.mgMonth}_${S.store}`);pickPhoto(pid,W&&W.staffId===pid?W.id:null);});
+$('#mg-announce').addEventListener('click',()=>{
+  const M=S.mgMonth,st=S.store,staffId=$('#mg-winner').value;if(!staffId){toast('Choose the winner first.');return;}
+  const t=tally(M,st);if(!t.complete||voteState(M)!=='closed'){toast('Finish the scorecard and close the vote first.');return;}
+  const top=t.ranked[0];const reason=$('#mg-reason').value.trim();const overrode=!!top&&staffId!==top.p.id;
+  if(overrode&&!reason){toast('Write the reason for choosing someone other than the top score.');$('#mg-reason').focus();return;}
+  const x=t.list.find(r=>r.p.id===staffId);
+  const id=`${M}_${st}`;const prevW=winnerDoc(id);const body={...prevW,type:'month',month:M,store:st,staffId,reason,overrode,score:x?Math.round(x.final*10)/10:null,photoId:(prevW.staffId===staffId&&prevW.photoId)||photoOf(staffId,null)||null};
+  q(async()=>{await rpc('mgr_set_winner',{p:S.mgr,winner_id:id,data:body});delete $('#mg-winner').dataset.touched;delete $('#mg-reason').dataset.touched;toast(`${personName(staffId)} is Employee of the Month`);});
+});
+$('#mg-year-save').addEventListener('click',()=>{
+  const Y=S.sbYear,st=S.store,staffId=$('#mg-year-winner').value;if(!Y||!staffId){toast('Choose a winner.');return;}
+  q(async()=>{await rpc('mgr_set_winner',{p:S.mgr,winner_id:`year-${Y}_${st}`,data:{type:'year',year:Y,store:st,staffId,reason:$('#mg-year-reason').value.trim(),photoId:photoOf(staffId,null)||null}});
+    ['#mg-year-winner','#mg-year-reason'].forEach(i=>delete $(i).dataset.touched);toast(`${personName(staffId)} is Employee of the Year ${Y}`);});
+});
+$('#sb-csv').addEventListener('click',async()=>{
+  if(!downloads)return;const Y=S.sbYear,st=S.store;const {rows}=boardData(Y,st);
+  const esc=v=>{const s=String(v??'');return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;};
+  const lines=[['Team member',...MONTHS,'Wins','Average final','Average manager /25','Months eligible'].map(esc).join(',')];
+  rows.forEach(r=>lines.push([r.name,...r.cells.map(c=>c.v.replace('★ ','*')),r.wins,r.avg!=null?r.avg.toFixed(1):'',r.avgMgr!=null?r.avgMgr.toFixed(1):'',r.elig].map(esc).join(',')));
+  try{await downloads.save({filename:`our-stars-scoreboard-${st}-${Y}.csv`,data:lines.join('\n')});toast('Scoreboard saved');}
+  catch(e){if(e&&e.code!=='declined')toast("Couldn't save the file here.");}
+});
+$('#mg-add').addEventListener('submit',e=>{
+  e.preventDefault();const name=$('#mg-add-name').value.trim();if(!name)return;
+  const staff=[...S.roster,{id:name.toLowerCase().normalize('NFD').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')+'-'+rid().slice(0,4),name,store:S.store}];
+  q(async()=>{await rpc('mgr_set_staff',{p:S.mgr,people:staff});$('#mg-add-name').value='';toast(`${name} added`);});
+});
+function removePerson(p,btn){
+  if(btn.dataset.confirm!=='1'){btn.dataset.confirm='1';btn.textContent='Tap again to remove';setTimeout(()=>{if(btn.isConnected){btn.dataset.confirm='';btn.textContent='Remove';}},4000);return;}
+  const staff=S.roster.filter(x=>x.id!==p.id);q(async()=>{await rpc('mgr_set_staff',{p:S.mgr,people:staff});toast(`${p.name} removed`);});
+}
+
+/* ---------- hall of fame moodboard ---------- */
+const NOTE_COLORS=['#FFF1A8','#FFD3DE','#CDEFD8','#CFE6FF','#FFDDB8','#E5D9FF'];
+const hashStr=v=>{let x=7;for(const c of String(v))x=(x*31+c.charCodeAt(0))|0;return Math.abs(x);};
+const tilt=(seed,span)=>((hashStr(seed)%(span*2+1))-span)*0.7;
+const photoOf=(staffId,w)=>(w&&w.photoId)||(S.roster.find(p=>p.id===staffId)||{}).photoId||null;
+function frame(staffId,w,big){
+  const pid=photoOf(staffId,w);const name=personName(staffId);
+  const ph=()=>h('div',{class:'ph'},h('span',{},name.slice(0,1)),h('small',{},'photo coming soon'));
+  const mat=h('div',{class:'mat'});
+  if(pid&&S.photos[pid]){const img=h('img',{src:S.photos[pid],alt:`Photo of ${name}`});img.addEventListener('error',()=>img.replaceWith(ph()));mat.append(img);}else mat.append(ph());
+  return h('div',{class:'frame'+(big?' big':'')},mat);
+}
+function stickyNote(it){
+  const from=it.author===S.uid?'you':(it.from?personName(it.from):'a teammate');
+  return h('article',{class:'sticky',style:`--note:${NOTE_COLORS[hashStr(it.id)%NOTE_COLORS.length]};--r:${tilt(it.id+'r',4)}deg`},
+    h('i',{class:hashStr(it.id+'p')%2?'pin':'tape','aria-hidden':'true'}),
+    h('div',{class:'to'},`Dear ${personName(it.to)},`),
+    h('p',{},it.msg),
+    h('div',{class:'sig'},it.kind==='guest'?`♥ from a happy guest`:`— ${from}`),
+    h('small',{},fmtDay(it.at)),reactionBar('s:'+it.id));
+}
+function reviewCard(r){
+  const n=Math.max(1,Math.min(5,Number(r.stars)||5));
+  const kids=[h('i',{class:'tape','aria-hidden':'true'}),h('div',{class:'stars',role:'img','aria-label':`${n} out of 5 stars`},'★'.repeat(n)+'☆'.repeat(5-n))];
+  if(r.imageId&&S.photos[r.imageId]){const img=h('img',{src:S.photos[r.imageId],alt:'Screenshot of the review'});img.addEventListener('error',()=>img.remove());kids.push(img);}
+  if(r.text)kids.push(h('p',{},`“${r.text}”`));
+  kids.push(h('div',{class:'sig'},`${r.author||'A guest'} · Google review`));
+  if(r.date)kids.push(h('small',{},fmtDay(r.date)));
+  kids.push(reactionBar('r:'+r.id));
+  return h('article',{class:'review',style:`--r:${tilt(r.id,3)}deg`},...kids);
+}
+function renderHall(){
+  const st=S.store;const ws=S.winners.filter(w=>w.store===st);
+  const years=ws.filter(w=>w.type==='year'&&w.staffId).sort((a,b)=>String(b.year).localeCompare(String(a.year)));
+  $('#mb-year').hidden=!years.length;
+  $('#mb-year').replaceChildren(...years.map(w=>h('figure',{class:'pinned year-star',style:`--r:${tilt('y'+w.year,1)}deg`},
+    h('div',{class:'ribbon'},`Employee of the Year ${w.year}`),frame(w.staffId,w,true),
+    h('figcaption',{class:'plaque'},h('b',{},personName(w.staffId)),w.reason?h('span',{},w.reason):null),reactionBar('w:'+w.id))));
+  const months=ws.filter(w=>w.type==='month'&&w.staffId).sort((a,b)=>b.month.localeCompare(a.month));
+  $('#mb-stars').replaceChildren(...(months.length?months.map(w=>h('figure',{class:'pinned',style:`--r:${tilt(w.month,3)}deg`},h('i',{class:'pin','aria-hidden':'true'}),frame(w.staffId,w,false),
+    h('figcaption',{class:'plaque'},h('small',{},monthName(w.month)),h('b',{},personName(w.staffId)),w.reason?h('span',{},w.reason):null),reactionBar('w:'+w.id))):
+    [h('p',{class:'paper-note'},`The first Employee of the Month at ${storeName(st)} gets pinned right here.`)]));
+  const shouts=allItems().filter(it=>it.store===st).map(it=>({at:it.at||'',month:it.month||(it.at||'').slice(0,7),el:()=>stickyNote(it)}));
+  const revs=S.reviews.filter(r=>r.store===st).map(r=>{const d=r.date||(r.at||'').slice(0,10);return {at:d,month:d.slice(0,7),el:()=>reviewCard(r)};});
+  const all=[...shouts,...revs];
+  const ms=[...new Set([monthKey(),...all.map(x=>x.month).filter(Boolean)])].sort().reverse().slice(0,6);
+  if(S.mbMonth!=='all'&&!ms.includes(S.mbMonth))S.mbMonth='all';
+  $('#mb-filter').replaceChildren(...[['all','Everything'],...ms.map(m=>[m,monthName(m)])].map(([v,t])=>h('button',{type:'button','aria-pressed':String(S.mbMonth===v),onclick:()=>{S.mbMonth=v;renderHall();}},t)));
+  const shown=all.filter(x=>S.mbMonth==='all'||x.month===S.mbMonth).sort((a,b)=>b.at.localeCompare(a.at)).slice(0,150);
+  resolveNames([...new Set(allItems().filter(it=>it.store===st).map(it=>it.author))]);
+  $('#mb-notes').replaceChildren(...(shown.length?shown.map(x=>x.el()):[h('p',{class:'paper-note'},'No notes here yet. Post a shout-out and it lands on the board as a sticky note.')]));
+}
+
+/* ---------- emoji reactions (Hall of fame) ---------- */
+const EMOJIS=['❤️','👏','😂','🥹','🔥','⭐'];
+function reactionBar(key){
+  const counts={};let mine=[];
+  for(const d of S.reactions){const arr=(d.items||{})[key]||[];for(const e of arr)counts[e]=(counts[e]||0)+1;if(d.uid===S.uid)mine=arr;}
+  const can=canPost();const open=S.pick===key;
+  const chips=EMOJIS.filter(e=>counts[e]).map(e=>h('button',{type:'button',class:'rx'+(mine.includes(e)?' on':''),'aria-pressed':String(mine.includes(e)),'aria-label':`${e} ${counts[e]}`,disabled:!can,onclick:()=>toggleReaction(key,e)},e,h('b',{},String(counts[e]))));
+  const add=can?h('button',{type:'button',class:'rx add','aria-expanded':String(open),'aria-label':open?'Close reactions':'Add a reaction',onclick:()=>{S.pick=open?null:key;renderHall();}},open?'×':'☺ +'):null;
+  const picker=open?h('div',{class:'rx-pick'},...EMOJIS.map(e=>h('button',{type:'button',class:mine.includes(e)?'on':'','aria-label':`React with ${e}`,onclick:()=>{S.pick=null;toggleReaction(key,e);}},e))):null;
+  return h('div',{class:'rx-bar'},...chips,add,picker);
+}
+function toggleReaction(key,e){
+  if(!canPost())return;
+  const cur=(S.reactions.find(d=>d.uid===S.uid)||{}).items||{};
+  const items=JSON.parse(JSON.stringify(cur));const arr=items[key]||[];
+  items[key]=arr.includes(e)?arr.filter(x=>x!==e):[...arr,e];if(!items[key].length)delete items[key];
+  S.reactions=[...S.reactions.filter(d=>d.uid!==S.uid),{uid:S.uid,items}];renderHall();
+  q(()=>rpc('react',{p:S.code,token:dev.token,item:key,emoji:e}));
+}
+
+/* ---------- photos and reviews (managers) ---------- */
+let assets=null;
+async function shrink(file,max){
+  try{const bmp=await createImageBitmap(file);const sc=Math.min(1,max/Math.max(bmp.width,bmp.height));
+    const c=document.createElement('canvas');c.width=Math.round(bmp.width*sc);c.height=Math.round(bmp.height*sc);
+    c.getContext('2d').drawImage(bmp,0,0,c.width,c.height);
+    return await new Promise(r=>c.toBlob(b=>r(b||file),'image/jpeg',0.86));}catch(e){return file;}
+}
+function assetErr(e){const c=e&&e.code;
+  if(c==='unsupported_type')return 'Use a JPG, PNG or WebP picture.';
+  if(c==='too_large')return 'That picture is too big. Try a smaller one.';
+  if(c==='quota_or_state')return 'Picture storage is full. Remove an old review picture first.';
+  return "Couldn't upload the picture. Try again.";}
+const photoInput=h('input',{type:'file',accept:'image/png,image/jpeg,image/webp',hidden:true,id:'photo-input','aria-label':'Choose a photo'});
+document.body.append(photoInput);
+let photoTarget=null;
+function pickPhoto(pid,winnerId){if(!assets){toast('Log in as manager to upload photos.');return;}photoTarget={pid,winnerId};photoInput.value='';photoInput.click();}
+photoInput.addEventListener('change',async()=>{
+  const f=photoInput.files[0];const t=photoTarget;if(!f||!t)return;toast('Uploading photo…');
+  try{const up=await assets.upload(await shrink(f,1000));
+    const staff=S.roster.map(p=>p.id===t.pid?{...p,photoId:up.id}:p);
+    q(async()=>{await rpc('mgr_set_staff',{p:S.mgr,people:staff});
+      if(t.winnerId&&S.winners.some(w=>w.id===t.winnerId))await rpc('mgr_set_winner',{p:S.mgr,winner_id:t.winnerId,data:{...winnerDoc(t.winnerId),photoId:up.id}});
+      toast(`Photo of ${personName(t.pid)} saved`);});
+  }catch(e){toast(assetErr(e));}
+});
+function renderReviews(){
+  const list=S.reviews.filter(r=>r.store===S.store).sort((a,b)=>(b.date||b.at||'').localeCompare(a.date||a.at||''));
+  $('#rv-list').replaceChildren(...(list.length?list.map(r=>h('div',{class:'shout'},
+    h('div',{class:'meta'},h('span',{class:'chip gold'},'★'.repeat(Math.max(1,Math.min(5,Number(r.stars)||5)))),h('span',{},`${r.author||'A guest'}${r.date?' · '+fmtDay(r.date):''}`),r.imageId?h('span',{},'with screenshot'):null,
+      h('button',{class:'link',type:'button',onclick:e=>removeReview(r,e.target)},'Remove')),
+    r.text?h('p',{},r.text):null)):[h('p',{class:'muted',style:'margin:0'},`No reviews pinned for ${storeName(S.store)} yet.`)]));
+  $('#rv-shot').disabled=!assets;$('#rv-shot-note').hidden=!!assets;
+  const d=$('#rv-date');if(!d.value&&document.activeElement!==d)d.value=new Date().toISOString().slice(0,10);
+}
+$('#rv-form').addEventListener('submit',async e=>{
+  e.preventDefault();const text=$('#rv-text').value.trim();const file=$('#rv-shot').files[0];
+  if(!text&&!file){toast('Add the review text or a screenshot.');return;}
+  $('#rv-save').disabled=true;
+  try{
+    let imageId=null;if(file&&assets){const up=await assets.upload(await shrink(file,1400));imageId=up.id;}
+    const body={store:S.store,text,author:$('#rv-author').value.trim(),stars:Number($('#rv-stars').value)||5,date:$('#rv-date').value||new Date().toISOString().slice(0,10),imageId,at:new Date().toISOString()};
+    await q(async()=>{await rpc('mgr_add_review',{p:S.mgr,review:body});$('#rv-form').reset();$('#rv-date').value='';toast('Review pinned to the Hall of fame');});
+  }catch(err){toast(assetErr(err));}
+  finally{$('#rv-save').disabled=false;renderReviews();}
+});
+function removeReview(r,btn){
+  if(btn.dataset.confirm!=='1'){btn.dataset.confirm='1';btn.textContent='Tap again to remove';setTimeout(()=>{if(btn.isConnected){btn.dataset.confirm='';btn.textContent='Remove';}},4000);return;}
+  q(async()=>{await rpc('mgr_delete_review',{p:S.mgr,review_id:r.id});toast('Review removed');});
+}
+
+function renderAll(){renderShell();renderShouts();renderVote();renderHall();renderManager();}
+
+/* ---------- start-up, gate and sync ---------- */
+function logoutTeam(){S.code=null;delete dev.code;saveDev();renderAll();}
+function logoutManager(){S.mgr=null;S.isAdmin=S.isOwner=false;assets=null;delete dev.mgr;saveDev();if(S.tab==='manager')S.tab='shouts';renderAll();}
+function setManager(pw){S.mgr=pw;S.isAdmin=S.isOwner=true;dev.mgr=pw;saveDev();
+  assets={upload:async blob=>{const data=await blobToDataURL(blob);const id=await rpc('mgr_add_photo',{p:S.mgr,data});S.photos[id]=data;return {id};},delete:async()=>{}};}
+function renderGate(){
+  const configured=!!(CFG.url&&CFG.key);
+  const needCode=!S.code;const needMe=!!S.code&&S.loaded&&!S.me;
+  const show=!configured||needCode||needMe;
+  $('#gate').hidden=!show;document.querySelector('nav.tabs').hidden=show;document.querySelector('main').hidden=show;$('#foot').hidden=show;
+  $('#gate-config').hidden=configured;
+  $('#gate-setup').hidden=!(configured&&needCode&&S.setup===false);
+  $('#gate-code').hidden=!(configured&&needCode&&S.setup!==false);
+  $('#gate-me').hidden=!(configured&&!needCode&&needMe);
+  if(needMe){const sel=$('#g-me');const opts=[];for(const st of STORES){for(const p of rosterFor(st.id))opts.push([p.id,`${p.name} · ${st.name}`]);}if(S.isAdmin)opts.push(['manager',"I'm a manager"]);fillSelect(sel,opts,'Choose your name');}
+  const who=$('#whoami');who.hidden=!S.code||!S.me;
+  if(S.code&&S.me)who.replaceChildren(`You're ${S.me==='manager'?'the manager':personName(S.me)} · `,h('button',{class:'link',type:'button',style:'color:inherit',onclick:()=>{S.me=null;delete dev.me;saveDev();renderAll();}},'not you?'));
+  $('#mgr-login-btn').hidden=!!S.isAdmin;$('#mgr-logout-btn').hidden=!S.isAdmin;
+}
+$('#gate-code').addEventListener('submit',async e=>{
+  e.preventDefault();const code=$('#g-code').value.trim();if(!code)return;$('#g-msg').textContent='Checking…';
+  try{const kind=await rpc('check_code',{p:code});
+    if(!kind){$('#g-msg').textContent='That code is not right.';return;}
+    S.code=code;dev.code=code;if(kind==='manager')setManager(code);saveDev();$('#g-msg').textContent='';$('#g-code').value='';await refresh();
+  }catch(err){$('#g-msg').textContent=errText(err);}
+});
+$('#gate-me').addEventListener('submit',e=>{e.preventDefault();const v=$('#g-me').value;if(!v)return;S.me=v;dev.me=v;saveDev();
+  const p=S.roster.find(x=>x.id===v);if(p){S.store=p.store;lsSet('ngc-store',p.store);}renderAll();});
+$('#gate-setup').addEventListener('submit',async e=>{
+  e.preventDefault();const pw=$('#s-pw').value,pin=$('#s-pin').value.trim();$('#s-msg').textContent='Saving…';
+  try{await rpc('setup',{new_pw:pw,new_pin:pin});S.setup=true;S.code=pw;dev.code=pw;setManager(pw);S.me='manager';dev.me='manager';saveDev();
+    $('#s-msg').textContent='';toast(`Board set up. Share the team code "${pin}" in the team chat.`);S.tab='manager';S.mv='team';await refresh();
+  }catch(err){$('#s-msg').textContent=errText(err);}
+});
+$('#mgr-login-btn').addEventListener('click',()=>{$('#mgr-login').hidden=false;$('#m-pw').focus();});
+$('#m-cancel').addEventListener('click',()=>{$('#mgr-login').hidden=true;$('#m-msg').textContent='';});
+$('#mgr-login').addEventListener('submit',async e=>{
+  e.preventDefault();const pw=$('#m-pw').value;$('#m-msg').textContent='Checking…';
+  try{const kind=await rpc('check_code',{p:pw});if(kind!=='manager'){$('#m-msg').textContent='That password is not right.';return;}
+    setManager(pw);$('#m-pw').value='';$('#m-msg').textContent='';$('#mgr-login').hidden=true;S.tab='manager';lsSet('ngc-tab','manager');await refresh();
+  }catch(err){$('#m-msg').textContent=errText(err);}
+});
+$('#mgr-logout-btn').addEventListener('click',()=>{logoutManager();toast('Logged out of manager');});
+$('#codes-form').addEventListener('submit',e=>{
+  e.preventDefault();const pin=$('#c-pin').value.trim(),pw=$('#c-pw').value;if(!pin&&!pw){toast('Type a new team code or password first.');return;}
+  q(async()=>{await rpc('mgr_change_codes',{p:S.mgr,new_pin:pin,new_pw:pw});
+    if(pw){setManager(pw);if(S.code&&S.code===dev.code&&S.isAdmin){S.code=pw;dev.code=pw;saveDev();}}
+    if(pin&&S.code!==S.mgr){S.code=pin;dev.code=pin;saveDev();}
+    $('#c-pin').value='';$('#c-pw').value='';toast(pin?`Saved. New team code: ${pin}`:'Password saved');});
+});
+async function loadSchedule(){
+  try{const res=await fetch('/',{cache:'no-store'});const html=await res.text();
+    const k='window.NGC_DATA =';const i=html.indexOf(k);if(i<0)return;const j=html.indexOf('<\/script>',i);
+    const d=JSON.parse(html.slice(i+k.length,j).trim().replace(/;\s*$/,''));const months={};
+    for(const [st,ms] of Object.entries(d.months||{}))for(const [docMonth,doc] of Object.entries(ms||{}))for(const w of (doc&&doc.weeks)||[]){
+      const mon=Date.parse(w.monday+'T12:00:00Z');if(isNaN(mon))continue;
+      for(const [key,sh] of Object.entries(w.shifts||{})){const [sec,role,ds]=key.split('|');const dd=Number(ds);const name=((sh||{}).name||'').trim();
+        if(!name||String(role).toUpperCase()==='MANAGER')continue;const o=(w.open||[])[dd]||0;if(!(o===1||(o===2&&sec!=='lunch')))continue;
+        const day=new Date(mon+dd*864e5);const mk=`${day.getUTCFullYear()}-${pad(day.getUTCMonth()+1)}`;if(mk!==docMonth)continue;
+        const id=`${mk}_${st}`;(months[id]=months[id]||{})[name]=(months[id][name]||0)+1;}}
+    S.planner={months,published:d.published||''};
+  }catch(e){}
+}
+async function loadPhotos(){
+  const ids=new Set();S.roster.forEach(p=>p.photoId&&ids.add(p.photoId));S.winners.forEach(w=>w.photoId&&ids.add(w.photoId));S.reviews.forEach(r=>r.imageId&&ids.add(r.imageId));
+  const missing=[...ids].filter(id=>!(id in S.photos));if(!missing.length)return;
+  const got=await rpc('photos_get',{p:S.code,ids:missing});for(const id of missing)S.photos[id]=(got&&got[id])||'';
+}
+let refreshing=null;
+async function refresh(){
+  if(!S.code||!CFG.url)return;
+  if(refreshing)return refreshing;
+  refreshing=(async()=>{
+    try{
+      const b=await rpc('board',{p:S.code});
+      S.roster=(b.staff||[]).map(x=>({id:x.id,name:x.name,store:x.store,photoId:x.photoId||null}));
+      const v=b.voting||{};S.settings={votingOpen:!!v.votingOpen,votingMonth:v.votingMonth||monthKey(),closesAt:v.closesAt||null,openedAt:v.openedAt||null};
+      S.shouts=(b.shoutouts||[]).map(x=>({...x,at:x.at||''}));
+      S.winners=b.winners||[];S.reviews=(b.reviews||[]).map(r=>({...r,date:r.date||''}));
+      const rx={};for(const r of (b.reactions||[])){rx[r.who]=rx[r.who]||{};(rx[r.who][r.key]=rx[r.who][r.key]||[]).push(r.emoji);}
+      S.reactions=Object.entries(rx).map(([uid,items])=>({uid,items}));
+      const mv=await rpc('my_votes',{p:S.code,token:dev.token});S.myVote={me:S.me,ballots:mv||{}};
+      if(S.mgr){const m=await rpc('mgr_data',{p:S.mgr});const byVoter={};
+        for(const x of (m.votes||[])){(byVoter[x.voter]=byVoter[x.voter]||{me:x.voter,ballots:{}}).ballots[x.month]={store:x.store,nominee:x.nominee,reason:x.reason};}
+        S.votes=Object.values(byVoter);const sc={};for(const x of (m.scores||[]))sc[`${x.month}_${x.store}`]={month:x.month,store:x.store,rows:x.rows||{}};S.scores=sc;}
+      await loadPhotos();S.loaded=true;S.offline=false;
+    }catch(e){if(e.code==='bad_code')logoutTeam();else if(e.code==='bad_password')logoutManager();else S.offline=true;}
+    renderAll();
+  })();
+  try{await refreshing;}finally{refreshing=null;}
+}
+async function boot(){
+  S.code=dev.code||null;S.mgr=dev.mgr||null;S.me=dev.me||null;
+  if(S.mgr)setManager(S.mgr);
+  renderAll();
+  if(!CFG.url||!CFG.key)return;
+  S.uid=await sha256hex('nonna-stars:dev:'+dev.token);
+  try{S.setup=await rpc('is_setup',{});}catch(e){S.setup=null;}
+  renderAll();
+  await Promise.all([loadSchedule(),refresh()]);
+  renderAll();
+  setInterval(()=>{if(document.visibilityState==='visible')refresh();},20000);
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')refresh();});
+}
+
+setInterval(()=>{renderVote();renderManager();},60000);
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&S.pick){S.pick=null;renderHall();}});
+boot();
+</script>
+</body>
+</html>
