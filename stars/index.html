@@ -365,7 +365,7 @@ figure .rx-bar{justify-content:center}
         <div class="card">
           <div class="row" style="justify-content:space-between"><h3 id="mg-score-title">Scorecard</h3><span class="muted" id="mg-progress-text"></span></div>
           <div class="bar" aria-hidden="true"><span id="mg-progress"></span></div>
-          <p class="muted" style="margin:0;font-size:13px">Enter shifts first. Eligibility updates by itself: at least 4 shifts, no no-show, no formal warning, did not win last month. Votes and final scores stay hidden until every eligible person is fully scored.</p>
+          <p class="muted" style="margin:0;font-size:13px">Enter shifts first. Eligibility updates by itself: at least 4 shifts, no no-show, no formal warning. Votes and final scores stay hidden until every eligible person is fully scored.</p>
           <p class="muted" id="mg-sync" style="margin:0;font-size:13px"></p>
           <div class="scroll"><table id="mg-table" class="sc"></table></div>
           <p class="muted" id="mg-cast" style="margin:0"></p>
@@ -622,13 +622,12 @@ function voteState(M){
   if(s.votingMonth&&M<s.votingMonth)return 'closed';
   return 'not-started';
 }
-function eligibility(r,isPrevWin){
+function eligibility(r){
   if(r.shifts==null||r.shifts==='')return {ok:false,pending:true,why:'Enter shifts'};
   const n=Number(r.shifts);
   if(n<MIN_SHIFTS)return {ok:false,why:`Only ${n} shift${n===1?'':'s'}`};
   if(r.noShow)return {ok:false,why:'No-show'};
   if(r.warning)return {ok:false,why:'Formal warning'};
-  if(isPrevWin)return {ok:false,why:'Won last month'};
   return {ok:true,why:'Eligible'};
 }
 function tally(M,st,includeFormer){
@@ -636,12 +635,11 @@ function tally(M,st,includeFormer){
   for(const v of S.votes){const b=v.ballots&&v.ballots[M];if(b&&b.store===st&&b.nominee){votes[b.nominee]=(votes[b.nominee]||0)+1;cast++;}}
   const shouts={};for(const it of allItems())if(it.month===M&&it.store===st)shouts[it.to]=(shouts[it.to]||0)+1;
   const rows=(S.scores[`${M}_${st}`]||{}).rows||{};
-  const prev=S.winners.find(w=>w.id===`${shiftMonth(M,-1)}_${st}`);const prevWin=prev&&prev.staffId;
   // month view: everyone on the team now; scoreboard: only people who have a row that month
   const people=includeFormer?Object.keys(rows).map(id=>({id,name:personName(id)})):rosterFor(st).map(p=>({id:p.id,name:p.name}));
   const list=people.map(p=>{const r0=rows[p.id]||{};const manual=r0.shifts!=null&&r0.shifts!=='';const ps=plannerShifts(M,st,p.name);
     const r={...r0,shifts:manual?r0.shifts:ps};const src=manual?'manual':(ps!=null?'planner':null);const mgr=CRIT.reduce((a,[k])=>a+(Number(r[k])||0),0);
-    const el=eligibility(r,p.id===prevWin);const vt=votes[p.id]||0;
+    const el=eligibility(r);const vt=votes[p.id]||0;
     const scored=CRIT.every(([k])=>Number(r[k])>0);
     const final=0.6*mgr/25*100+0.4*(cast?vt/cast:0)*100;
     return {p,r,mgr,votes:vt,shouts:shouts[p.id]||0,el,eligible:el.ok,scored,final,src,plannerVal:ps};});
