@@ -225,7 +225,7 @@ const mine=(()=>{try{return JSON.parse(localStorage.getItem('ngc-checks-mine')||
 const saveMine=()=>{const cut=Date.now()-15*60e3;for(const [k,t] of Object.entries(mine))if(t<cut)delete mine[k];try{localStorage.setItem('ngc-checks-mine',JSON.stringify(mine));}catch(e){}};
 
 const S={code:dev.code||null,mgr:dev.mgr||null,store:lsGet('ngc-checks-store')||(STORES[0]||{}).id,today:isoToday(),day:isoToday(),
-  tab:lsGet('ngc-checks-tab')||'today',who:lsGet('ngc-checks-who')||'',staff:[],rows:[],loaded:false,offline:false,
+  tab:lsGet('ngc-checks-tab')||'today',who:lsGet('ngc-checks-who')||'',staff:[],rows:[],periodic:[],loaded:false,offline:false,
   drafts:{},fixing:null,busy:new Set(),hist:{from:addDays(isoToday(),-6),to:isoToday(),store:null,rows:null,loading:false}};
 if(!STORES.some(s=>s.id===S.store))S.store=(STORES[0]||{}).id;
 
@@ -253,11 +253,20 @@ function needWho(){if(whoPerson())return false;toast("First choose who's doing t
 // ---------- data helpers ----------
 const latest=(kind,item,slot)=>{let r=null;for(const x of S.rows)if(x.kind===kind&&x.item===item&&(x.slot||'')===(slot||''))r=x;return r;};
 const entriesFor=(kind,item,slot)=>S.rows.filter(x=>x.kind===kind&&x.item===item&&(x.slot||'')===(slot||''));
+const dailyGroups=day=>(C.cleaning||[]).filter(g=>(g.every||'day')==='day'&&(!g.days||g.days.includes(weekday(day))));
+const periodGroups=()=>(C.cleaning||[]).filter(g=>g.every==='week'||g.every==='month');
+const lastOfMonth=iso=>{const [y,m]=iso.split('-').map(Number);return new Date(Date.UTC(y,m,0)).toISOString().slice(0,10);};
+const periodStart=(g,day)=>g.every==='week'?addDays(day,-((weekday(day)+6)%7)):day.slice(0,8)+'01';
+const periodEnd=(g,day)=>g.every==='week'?addDays(periodStart(g,day),6):lastOfMonth(day);
+const allClean=()=>{const m=new Map();for(const r of [...S.periodic,...S.rows])m.set(r.id,r);return [...m.values()].sort((a,b)=>String(a.at).localeCompare(String(b.at)));};
+function periodDone(g,t,day,rows){const a=periodStart(g,day),b=periodEnd(g,day);let r=null;for(const x of rows)if(x.kind==='clean'&&x.item===t.id&&x.slot===g.id&&x.day>=a&&x.day<=b)r=x;return r;}
+function periodCount(g,st,day,rows){const ts=forStore(g.tasks,st);return [ts.filter(t=>periodDone(g,t,day,rows)).length,ts.length];}
+const fmtShort=iso=>fmtDate(iso,{weekday:'short',day:'numeric',month:'short'});
 function progressFor(rows,st,day){
   const has=(k,i,s)=>rows.some(x=>x.day===day&&x.kind===k&&x.item===i&&(x.slot||'')===(s||''));
   const units=forStore(C.temperatures.units,st);let tDone=0,tAll=0,warn=0;
   for(const t of C.temperatures.times)for(const u of units){tAll++;const l=[...rows].reverse().find(x=>x.day===day&&x.kind==='temp'&&x.item===u.id&&x.slot===t.id);if(l){tDone++;if(!l.ok)warn++;}}
-  let cDone=0,cAll=0;for(const g of C.cleaning)for(const tk of forStore(g.tasks,st)){cAll++;if(has('clean',tk.id,g.id))cDone++;}
+  let cDone=0,cAll=0;for(const g of dailyGroups(day))for(const tk of forStore(g.tasks,st)){cAll++;if(has('clean',tk.id,g.id))cDone++;}
   let wDone=0,wAll=0;for(const c of C.toilet.checks){wAll++;const l=[...rows].reverse().find(x=>x.day===day&&x.kind==='toilet'&&x.item==='toilet'&&x.slot===c.id);if(l){wDone++;if(!l.ok)warn++;}}
   return {tDone,tAll,cDone,cAll,wDone,wAll,warn};
 }
@@ -278,12 +287,12 @@ async function add(kind,item,slot,{value=null,ok=true,details={}}={}){
   if(needWho())return null;const p=whoPerson();const key=`${kind}|${item}|${slot}`;if(S.busy.has(key))return null;S.busy.add(key);renderPanels();
   try{
     const row=await rpc('checks_add',{p:S.code,token:dev.token,store_id:S.store,day_in:S.day,kind_in:kind,item_in:item,slot_in:slot,value_in:value,ok_in:ok,details_in:details,staff_id_in:p.id,staff_name_in:p.short||p.name});
-    S.rows.push(row);mine[row.id]=Date.now();saveMine();S.offline=false;return row;
+    S.rows.push(row);if(row.details&&row.details.every)S.periodic.push(row);mine[row.id]=Date.now();saveMine();S.offline=false;return row;
   }catch(e){toast(errText(e));return null;}
   finally{S.busy.delete(key);renderAll();}
 }
 async function undo(row){
-  try{await rpc('checks_undo',{p:S.code,token:dev.token,check_id:row.id});S.rows=S.rows.filter(x=>x.id!==row.id);delete mine[row.id];saveMine();toast('Undone');}
+  try{await rpc('checks_undo',{p:S.code,token:dev.token,check_id:row.id});S.rows=S.rows.filter(x=>x.id!==row.id);S.periodic=S.periodic.filter(x=>x.id!==row.id);delete mine[row.id];saveMine();toast('Undone');}
   catch(e){toast(errText(e));}
   renderAll();
 }
@@ -298,9 +307,9 @@ function renderShell(){
   $('#header-controls').hidden=!loggedIn;$('#who-row').hidden=!loggedIn;
   const st=STORES.find(s=>s.id===S.store);$('#eyebrow').textContent=`Nonna Goes Crazy${st?' · '+st.name:''}`;
   $('#daterow').textContent=(S.day===S.today?'Today, ':'Yesterday, ')+fmtDate(S.day);
-  $('#day-seg').replaceChildren(...[[S.today,'Today'],[addDays(S.today,-1),'Yesterday']].map(([d,l])=>h('button',{type:'button','aria-pressed':String(S.day===d),onclick:()=>{S.day=d;S.drafts={};S.fixing=null;S.rows=[];renderAll();refresh();}},l)));
+  $('#day-seg').replaceChildren(...[[S.today,'Today'],[addDays(S.today,-1),'Yesterday']].map(([d,l])=>h('button',{type:'button','aria-pressed':String(S.day===d),onclick:()=>{S.day=d;S.drafts={};S.fixing=null;S.rows=[];S.periodic=[];renderAll();refresh();}},l)));
   $('#store-seg').hidden=STORES.length<2;
-  $('#store-seg').replaceChildren(...STORES.map(s=>h('button',{type:'button','aria-pressed':String(S.store===s.id),onclick:()=>{S.store=s.id;lsSet('ngc-checks-store',s.id);S.rows=[];S.drafts={};renderAll();refresh();}},s.name)));
+  $('#store-seg').replaceChildren(...STORES.map(s=>h('button',{type:'button','aria-pressed':String(S.store===s.id),onclick:()=>{S.store=s.id;lsSet('ngc-checks-store',s.id);S.rows=[];S.periodic=[];S.drafts={};renderAll();refresh();}},s.name)));
   const sel=$('#who');const ps=people();const keep=S.who;
   sel.replaceChildren(h('option',{value:''},'Choose your name'),h('optgroup',{label:'Team'},...staffHere().map(p=>h('option',{value:p.id},p.name))),h('optgroup',{label:'Management'},...MGMT.map(m=>h('option',{value:m.id},`${m.name} (${m.role})`))));
   sel.value=ps.some(p=>p.id===keep)?keep:'';sel.classList.toggle('need',false);
@@ -332,7 +341,8 @@ function renderToday(){
       r.kind==='temp'?`${itemName('temp',r.item)} (${slotName('temp',r.slot)}): ${fmtTemp(r.value)} · ${r.details.action||''}`:`${slotName('toilet',r.slot)}: ${r.details.action||'not complete'}`)))):null,
     h('div',{class:'sum'},
       card('temp','Temperatures',pr.tDone,pr.tAll,h('div',{class:'small muted'},C.temperatures.times.map(t=>{const u=forStore(C.temperatures.units,S.store);const d=u.filter(x=>latest('temp',x.id,t.id)).length;return `${t.label}: ${d}/${u.length}`;}).join(' · '))),
-      card('clean','Cleaning',pr.cDone,pr.cAll,h('div',{class:'small muted'},C.cleaning.map(g=>{const t=forStore(g.tasks,S.store);const d=t.filter(x=>latest('clean',x.id,g.id)).length;return `${g.label}: ${d}/${t.length}`;}).join(' · '))),
+      card('clean','Cleaning',pr.cDone,pr.cAll,h('div',{class:'small muted'},[...dailyGroups(S.day).map(g=>{const t=forStore(g.tasks,S.store);const d=t.filter(x=>latest('clean',x.id,g.id)).length;return `${g.label}: ${d}/${t.length}`;}),
+        ...periodGroups().map(g=>{const [d,n]=periodCount(g,S.store,S.day,allClean());return `${g.every==='week'?'This week':'This month'}: ${d}/${n}`;})].join(' · '))),
       card('toilet','Toilet',pr.wDone,pr.wAll,toiletLine)
     ));
 }
@@ -390,19 +400,33 @@ async function saveTemp(u,t){
 
 // ---------- render: cleaning ----------
 function renderClean(){
-  const p=$('#p-clean');
-  const groups=C.cleaning.map(g=>{
+  const p=$('#p-clean');const rows=allClean();
+  const daily=dailyGroups(S.day).map(g=>{
     const tasks=forStore(g.tasks,S.store);const done=tasks.filter(t=>latest('clean',t.id,g.id)).length;
     return h('div',{class:'card'},
       h('div',{class:'cardhead'},h('h3',{},g.label),h('span',{class:'chip'+(done>=tasks.length?'':' todo')},`${done}/${tasks.length}`)),
+      g.who?h('p',{class:'small muted',style:'margin:-6px 0 0'},`${g.who} · at closing`):null,
       h('div',{class:'bar'},h('span',{style:`width:${tasks.length?Math.round(done/tasks.length*100):0}%`})),
-      ...tasks.map(t=>{const l=latest('clean',t.id,g.id);const key=`clean|${t.id}|${g.id}`;const busy=S.busy.has(key);
-        return h('div',{class:'task'+(l?' done':'')},
-          h('button',{class:'tick',type:'button','aria-pressed':String(!!l),'aria-label':t.name,disabled:(!!l||busy)||null,onclick:()=>add('clean',t.id,g.id)},l?'✓':busy?'…':''),
-          h('div',{class:'tx'},t.name),
-          l?h('div',{class:'meta'},`${l.staffName} · ${fmtTime(l.at)}`,undoBtn(l)):null);}));
+      ...tasks.map(t=>taskRow(g,t,latest('clean',t.id,g.id))));
   });
-  p.replaceChildren(h('div',{},h('h2',{},'Cleaning'),h('p',{class:'lede'},'Tick each task when it is done. Your name and the time are saved with it.')),...groups);
+  const periodic=periodGroups().map(g=>{
+    const tasks=forStore(g.tasks,S.store);const [done,all]=periodCount(g,S.store,S.day,rows);const end=periodEnd(g,S.day);
+    return h('div',{class:'card'},
+      h('div',{class:'cardhead'},h('h3',{},g.label),h('span',{class:'chip'+(done>=all?'':' todo')},`${done}/${all}`)),
+      h('p',{class:'small muted',style:'margin:-6px 0 0'},`${g.who||''}${g.who?' · ':''}due by ${fmtDate(end,{weekday:g.every==='week'?'long':undefined,day:'numeric',month:'long'})}`),
+      h('div',{class:'bar'},h('span',{style:`width:${all?Math.round(done/all*100):0}%`})),
+      ...tasks.map(t=>taskRow(g,t,periodDone(g,t,S.day,rows),true)));
+  });
+  p.replaceChildren(h('div',{},h('h2',{},'Cleaning'),h('p',{class:'lede'},'Tick each task when it is done. Your name and the time are saved with it.')),...daily,
+    periodic.length?h('div',{},h('h2',{style:'margin-top:8px'},'Weekly and monthly'),h('p',{class:'lede'},'Do these once in the week or month, on a quieter day. Once someone ticks one, it counts for everyone.')):null,...periodic);
+}
+function taskRow(g,t,l,showDay){
+  const key=`clean|${t.id}|${g.id}`;const busy=S.busy.has(key);
+  return h('div',{class:'task'+(l?' done':'')},
+    h('button',{class:'tick',type:'button','aria-pressed':String(!!l),'aria-label':t.name,disabled:(!!l||busy)||null,
+      onclick:()=>add('clean',t.id,g.id,g.every&&g.every!=='day'?{details:{every:g.every}}:undefined)},l?'✓':busy?'…':''),
+    h('div',{class:'tx'},t.name),
+    l?h('div',{class:'meta'},`${l.staffName} · ${showDay&&l.day!==S.day?fmtShort(l.day)+' ':''}${fmtTime(l.at)}`,undoBtn(l)):null);
 }
 
 // ---------- render: toilet ----------
@@ -455,7 +479,7 @@ function exportCsv(){
 }
 async function delRow(r){
   if(!confirm(`Remove this entry?\n${KIND[r.kind]} · ${itemName(r.kind,r.item,r.slot)} · ${r.staffName} ${fmtTime(r.at)}`))return;
-  try{await rpc('mgr_delete_check',{p:S.mgr,check_id:r.id});S.hist.rows=S.hist.rows.filter(x=>x.id!==r.id);S.rows=S.rows.filter(x=>x.id!==r.id);toast('Removed');}catch(e){toast(errText(e));}
+  try{await rpc('mgr_delete_check',{p:S.mgr,check_id:r.id});S.hist.rows=S.hist.rows.filter(x=>x.id!==r.id);S.rows=S.rows.filter(x=>x.id!==r.id);S.periodic=S.periodic.filter(x=>x.id!==r.id);toast('Removed');}catch(e){toast(errText(e));}
   renderAll();
 }
 function renderHistory(){
@@ -495,6 +519,26 @@ function renderHistory(){
           h('span',{class:'small muted'},`Temps ${pr.tDone}/${pr.tAll} · Cleaning ${pr.cDone}/${pr.cAll} · Toilet ${pr.wDone}/${pr.wAll}`),pr.warn?h('span',{class:'chip warn'},`${pr.warn} problem${pr.warn>1?'s':''}`):null),
           grid,rows.length?log:h('p',{class:'muted small'},'Nothing logged.')));
       }
+    }
+    const pg=periodGroups();
+    if(pg.length){
+      const pbox=h('div',{class:'card'},h('h3',{},'Weekly and monthly tasks'),h('p',{class:'small muted',style:'margin:0'},'When each task was done in the chosen dates. Red means it was not done in that week or month.'));
+      for(const st of stores){
+        if(stores.length>1)pbox.append(h('h3',{},(STORES.find(s=>s.id===st)||{}).name));
+        for(const g of pg){
+          const periods=[];for(let d=H.from;d<=H.to;d=addDays(periodEnd(g,d),1)){const a=periodStart(g,d),b=periodEnd(g,d);periods.push([a,b]);}
+          const label=([a,b])=>g.every==='week'?`Week of ${fmtDate(a,{weekday:undefined,day:'numeric',month:'short'})}`:fmtDate(a,{weekday:undefined,day:undefined,month:'long',year:'numeric'});
+          const rowsSt=H.rows.filter(r=>r.store===st);
+          pbox.append(h('div',{class:'scroll'},h('table',{class:'grid'},
+            h('thead',{},h('tr',{},h('th',{},g.label),...periods.map(pr=>h('th',{},label(pr))))),
+            h('tbody',{},...forStore(g.tasks,st).map(t=>h('tr',{},h('td',{},t.name),...periods.map(([a,b])=>{
+              const done=rowsSt.filter(r=>r.kind==='clean'&&r.item===t.id&&r.slot===g.id&&r.day>=a&&r.day<=b);
+              const past=b<S.today;
+              return h('td',{style:!done.length&&past?'background:var(--warn-soft);color:var(--warn);font-weight:700':''},
+                done.length?done.map(r=>`${fmtDate(r.day,{weekday:'short',day:'numeric',month:undefined})} ${r.staffName}`).join(', '):past?'Not done':'—');})))))));
+        }
+      }
+      kids.push(pbox);
     }
     kids.push(box);
   }
@@ -536,7 +580,7 @@ async function refresh(){
     try{const day=S.day,store=S.store;const b=await rpc('checks_day',{p:S.code,store_id:store,day_in:day});
       if(day!==S.day||store!==S.store)return;
       const newToday=b.today||isoToday();if(newToday!==S.today){const wasToday=S.day===S.today;S.today=newToday;if(wasToday){S.day=newToday;S.drafts={};refreshing=null;return refresh();}}
-      S.staff=b.staff||[];S.rows=b.rows||[];S.loaded=true;S.offline=false;
+      S.staff=b.staff||[];S.rows=b.rows||[];S.periodic=b.periodic||[];S.loaded=true;S.offline=false;
     }catch(e){if(e.code==='bad_code')logout();else S.offline=true;}
     softRender();
   })();

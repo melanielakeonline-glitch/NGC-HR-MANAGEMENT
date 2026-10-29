@@ -56,7 +56,11 @@ begin
     'now', now(),
     'staff', coalesce((select jsonb_agg(jsonb_build_object('id', id, 'name', name, 'store', store) order by sort, created_at) from staff where store not like 'former:%'), '[]'::jsonb),
     'rows', coalesce((select jsonb_agg(_check_json(c) order by c.created_at) from checks c
-                      where c.store = store_id and c.day = coalesce(day_in, _lisbon_today())), '[]'::jsonb)
+                      where c.store = store_id and c.day = coalesce(day_in, _lisbon_today())), '[]'::jsonb),
+    -- Weekly and monthly tasks from the last 5 weeks, so the page knows what is already done this week/month.
+    'periodic', coalesce((select jsonb_agg(_check_json(c) order by c.created_at) from checks c
+                      where c.store = store_id and c.kind = 'clean' and c.details->>'every' in ('week', 'month')
+                        and c.day between coalesce(day_in, _lisbon_today()) - 35 and coalesce(day_in, _lisbon_today())), '[]'::jsonb)
   );
 end $$;
 

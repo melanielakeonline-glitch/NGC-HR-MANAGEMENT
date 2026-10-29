@@ -25,7 +25,7 @@ Shout-outs, Employee of the Month voting, the Hall of fame moodboard and the man
 Fridge and freezer temperatures (opening and closing), daily cleaning tasks and the two daily toilet checks.
 
 - `checks/index.html` — the page (one file, no build step).
-- `checks/checks-config.js` — the fridges and their limits, cleaning tasks, toilet checklist and stores. Edit this to change what staff see.
+- `checks/checks-config.js` — the fridges and their limits, cleaning tasks (daily at closing per role, weekly, monthly — based on the chef, cashier and production booklets), toilet checklist and stores. Edit this to change what staff see.
 - `checks/checks-setup.sql` — run once in Supabase > SQL Editor, after `stars/supabase-setup.sql`. Safe to run again. Not deployed.
 - Uses the same Supabase project, team code, manager password and team list as the Stars board. A phone already logged in on /stars is logged in here too.
 - Staff log checks for today (or yesterday, for closing after midnight) and can undo a mis-tap within 10 minutes. Management sees History (any date range), can remove wrong entries, download a CSV for Excel or print.
