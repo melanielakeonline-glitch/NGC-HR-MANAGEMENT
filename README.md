@@ -16,7 +16,7 @@ Shout-outs, Employee of the Month voting, the Hall of fame moodboard and the man
 - `stars/index.html` — the page (one file, no build step).
 - `stars/config.js` — the Supabase Project URL and publishable key. The publishable key is meant to be public.
 - `stars/supabase-setup.sql` — run once in Supabase > SQL Editor. Safe to run again after changes. Not deployed.
-- Staff open the page and type the team code once; managers log in with the manager password. Both are set the first time the page is opened and can be changed in Back office > Team.
+- Staff tap Employee and pick their name, no code needed. Management logs in with the management password, which can be changed in Back office > Team.
 - Shift counts for the scorecard are read from this site's schedule (`/index.html`), so publishing the schedule also updates the shifts.
 - `stars-board/` — the earlier Claude-hosted version, kept as a backup and not deployed.
 

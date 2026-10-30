@@ -123,13 +123,13 @@ language sql stable security definer set search_path = public as $$
       or _mgr_ok(p)
 $$;
 
+-- Staff no longer need a team code on the Stars board: they just pick their name.
+-- Authorship of shout-outs, votes and reactions is still tied to each phone's private token.
+-- (The team code still opens the Daily checks page, which has its own check.)
 create or replace function _need_pin(p text) returns void
 language plpgsql security definer set search_path = public as $$
 begin
-  if not _pin_ok(p) then
-    perform pg_sleep(1);
-    raise exception 'bad_code' using errcode = '28000';
-  end if;
+  return;
 end $$;
 
 create or replace function _need_mgr(p text) returns void

@@ -1,3 +1,4 @@
 stars-board
 stars/supabase-setup.sql
 checks/checks-setup.sql
+stars/no-team-code.sql

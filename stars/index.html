@@ -219,7 +219,7 @@ figure .rx-bar{justify-content:center}
     <h2>Welcome to Our Stars</h2>
     <p class="lede">How are you logging in?</p>
     <div class="roles">
-      <button type="button" class="role-btn" data-role="employee"><b>Employee</b><span>Team code and your name</span></button>
+      <button type="button" class="role-btn" data-role="employee"><b>Employee</b><span>Just pick your name</span></button>
       <button type="button" class="role-btn" data-role="management"><b>Management</b><span>Password and who you are</span></button>
     </div>
   </div>
@@ -435,13 +435,12 @@ figure .rx-bar{justify-content:center}
           </form>
         </div>
         <form class="card" id="codes-form">
-          <h3>Codes</h3>
-          <p class="muted" style="margin:0;font-size:13px">Change the team code when someone leaves the team. Everyone then types the new code once. Leave a field empty to keep it.</p>
+          <h3>Management password</h3>
+          <p class="muted" style="margin:0;font-size:13px">Staff don't need a code: they just pick their name. Change the management password here if it ever gets out. Everyone in management then logs in again with the new one.</p>
           <div class="row">
-            <label for="c-pin" style="flex:1 1 180px">New team code<input type="text" id="c-pin" minlength="6" autocomplete="off"></label>
-            <label for="c-pw" style="flex:1 1 180px">New manager password<input type="password" id="c-pw" minlength="8" autocomplete="new-password"></label>
+            <label for="c-pw" style="flex:1 1 180px">New management password<input type="password" id="c-pw" minlength="8" autocomplete="new-password"></label>
           </div>
-          <div class="row"><button class="btn small" type="submit">Save codes</button></div>
+          <div class="row"><button class="btn small" type="submit">Save password</button></div>
         </form>
       </div>
     </section>
@@ -488,7 +487,7 @@ const blobToDataURL=b=>new Promise((ok,no)=>{const r=new FileReader();r.onload=(
 
 let chain=Promise.resolve();
 const q=fn=>chain=chain.then(fn).catch(e=>{toast(errText(e));}).then(()=>refresh());
-const ERR={bad_code:'That team code is not right.',bad_password:'That manager password is not right.',not_yours:'You can only change your own shout-outs.',voting_closed:'Voting has closed.',no_self_vote:"You can't vote for yourself.",voted_elsewhere:'Someone already voted with this name from another phone. Tell the manager if that was not you.',device_used:'This phone already voted with another name this month.',unknown_person:'That person is no longer on the team list.',reason_needed:'Add a short reason.',offline:"Can't reach the board. Check your connection.",too_large:'That picture is too big.',not_an_image:'Use a JPG, PNG or WebP picture.',code_too_short:'The team code needs at least 6 characters.',password_too_short:'The manager password needs at least 8 characters.',same_codes:'Use a different team code and manager password.',already_setup:'The board is already set up. Use the team code.'};
+const ERR={bad_code:"Can't open the board right now. Ask the manager.",bad_password:'That manager password is not right.',not_yours:'You can only change your own shout-outs.',voting_closed:'Voting has closed.',no_self_vote:"You can't vote for yourself.",voted_elsewhere:'Someone already voted with this name from another phone. Tell the manager if that was not you.',device_used:'This phone already voted with another name this month.',unknown_person:'That person is no longer on the team list.',reason_needed:'Add a short reason.',offline:"Can't reach the board. Check your connection.",too_large:'That picture is too big.',not_an_image:'Use a JPG, PNG or WebP picture.',code_too_short:'The team code needs at least 6 characters.',password_too_short:'The manager password needs at least 8 characters.',same_codes:'Use a different team code and manager password.',already_setup:'The board is already set up. Use the team code.'};
 function errText(e){const c=e&&e.code;if(c==='bad_code')logoutTeam();if(c==='bad_password')logoutManager();return ERR[c]||"Couldn't save. Check your connection and try again.";}
 let toastT;function toast(msg){const t=$('#toast');t.textContent=msg;t.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>t.hidden=true,3200);}
 
@@ -994,7 +993,10 @@ function renderGate(){
   const who=$('#whoami');who.hidden=!S.code||!S.me;
   if(S.code&&S.me)who.replaceChildren(`You're ${personName(S.me)} · `,h('button',{class:'link',type:'button',style:'color:inherit',onclick:logoutAll},'log out'));
 }
-document.querySelectorAll('.role-btn').forEach(b=>b.addEventListener('click',()=>{S.loginAs=b.dataset.role;renderAll();const f=S.loginAs==='employee'?$('#g-code'):$('#gm-who');if(f)f.focus();}));
+const STAFF_OPEN='staff';// employees no longer type a team code
+document.querySelectorAll('.role-btn').forEach(b=>b.addEventListener('click',()=>{
+  if(b.dataset.role==='employee'){S.code=STAFF_OPEN;dev.code=STAFF_OPEN;saveDev();renderAll();refresh();return;}
+  S.loginAs=b.dataset.role;renderAll();const f=$('#gm-who');if(f)f.focus();}));
 document.querySelectorAll('[data-back]').forEach(b=>b.addEventListener('click',()=>{S.loginAs=null;$('#g-msg').textContent='';$('#gm-msg').textContent='';renderAll();}));
 document.querySelectorAll('[data-logout]').forEach(b=>b.addEventListener('click',logoutAll));
 $('#logout-btn').addEventListener('click',logoutAll);
@@ -1023,11 +1025,11 @@ $('#gate-setup').addEventListener('submit',async e=>{
   }catch(err){$('#s-msg').textContent=errText(err);}
 });
 $('#codes-form').addEventListener('submit',e=>{
-  e.preventDefault();const pin=$('#c-pin').value.trim(),pw=$('#c-pw').value;if(!pin&&!pw){toast('Type a new team code or password first.');return;}
+  e.preventDefault();const pin='',pw=$('#c-pw').value;if(!pw){toast('Type a new password first.');return;}
   q(async()=>{await rpc('mgr_change_codes',{p:S.mgr,new_pin:pin,new_pw:pw});
     if(pw){setManager(pw);if(S.code&&S.code===dev.code&&S.isAdmin){S.code=pw;dev.code=pw;saveDev();}}
     if(pin&&S.code!==S.mgr){S.code=pin;dev.code=pin;saveDev();}
-    $('#c-pin').value='';$('#c-pw').value='';toast(pin?`Saved. New team code: ${pin}`:'Password saved');});
+    $('#c-pw').value='';toast(pin?`Saved. New team code: ${pin}`:'Password saved');});
 });
 async function loadSchedule(){
   try{const res=await fetch('/',{cache:'no-store'});const html=await res.text();
