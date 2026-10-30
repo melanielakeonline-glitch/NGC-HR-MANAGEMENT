@@ -46,11 +46,33 @@ language sql stable as $$
     'staffName', c.staff_name, 'at', c.created_at)
 $$;
 
+-- ---------- staff link ----------
+-- Staff open the page through a private link (…/checks#k=…), so they don't type a code.
+-- Only a hash of the link key is stored. The team code and manager password keep working too.
+-- Management can make a new link from History; the old link then stops working.
+alter table settings add column if not exists checks_key_hash text;
+update settings set checks_key_hash = '9d21b0e5cc2def2fe13e9268d3f4fa287947cdd771dc56152f0422543dd96983' where id = 1 and checks_key_hash is null;
+
+create or replace function _checks_ok(p text) returns boolean
+language sql stable security definer set search_path = public as $$
+  select _pin_ok(p) or exists (select 1 from settings where id = 1 and checks_key_hash is not null
+                                 and checks_key_hash = _h('checks:' || coalesce(p, '')))
+$$;
+
+create or replace function _need_checks(p text) returns void
+language plpgsql security definer set search_path = public as $$
+begin
+  if not _checks_ok(p) then
+    perform pg_sleep(1);
+    raise exception 'bad_code' using errcode = '28000';
+  end if;
+end $$;
+
 -- ---------- staff ----------
 create or replace function checks_day(p text, store_id text, day_in date) returns jsonb
 language plpgsql security definer set search_path = public as $$
 begin
-  perform _need_pin(p);
+  perform _need_checks(p);
   return jsonb_build_object(
     'today', _lisbon_today(),
     'now', now(),
@@ -69,7 +91,7 @@ create or replace function checks_add(p text, token text, store_id text, day_in 
 language plpgsql security definer set search_path = public as $$
 declare r checks;
 begin
-  perform _need_pin(p);
+  perform _need_checks(p);
   if char_length(coalesce(token, '')) < 16 then raise exception 'bad_device'; end if;
   if day_in is null or day_in > _lisbon_today() or day_in < _lisbon_today() - 1 then raise exception 'wrong_day'; end if;
   if kind_in = 'temp' and value_in is null then raise exception 'value_needed'; end if;
@@ -87,7 +109,7 @@ end $$;
 create or replace function checks_undo(p text, token text, check_id uuid) returns boolean
 language plpgsql security definer set search_path = public as $$
 begin
-  perform _need_pin(p);
+  perform _need_checks(p);
   delete from checks where id = check_id and device_hash = _h('dev:' || coalesce(token, ''))
     and created_at > now() - interval '10 minutes';
   if not found then raise exception 'cannot_undo'; end if;
@@ -104,6 +126,15 @@ begin
                    where (store_id is null or c.store = store_id) and c.day between from_day and to_day), '[]'::jsonb);
 end $$;
 
+create or replace function mgr_new_checks_key(p text, new_key text) returns boolean
+language plpgsql security definer set search_path = public as $$
+begin
+  perform _need_mgr(p);
+  if char_length(coalesce(new_key, '')) < 16 then raise exception 'key_too_short'; end if;
+  update settings set checks_key_hash = _h('checks:' || new_key), updated_at = now() where id = 1;
+  return true;
+end $$;
+
 create or replace function mgr_delete_check(p text, check_id uuid) returns boolean
 language plpgsql security definer set search_path = public as $$
 begin
@@ -113,21 +144,22 @@ begin
 end $$;
 
 -- ---------- access ----------
-revoke all on function _lisbon_today(), _check_json(checks) from public;
+revoke all on function _lisbon_today(), _check_json(checks), _checks_ok(text), _need_checks(text) from public;
 do $$
 declare f text;
 begin
   if exists (select 1 from pg_roles where rolname = 'anon') then
-    revoke all on function _lisbon_today(), _check_json(checks) from anon;
+    revoke all on function _lisbon_today(), _check_json(checks), _checks_ok(text), _need_checks(text) from anon;
   end if;
   if exists (select 1 from pg_roles where rolname = 'authenticated') then
-    revoke all on function _lisbon_today(), _check_json(checks) from authenticated;
+    revoke all on function _lisbon_today(), _check_json(checks), _checks_ok(text), _need_checks(text) from authenticated;
   end if;
   foreach f in array array[
     'checks_day(text, text, date)',
     'checks_add(text, text, text, date, text, text, text, numeric, boolean, jsonb, text, text)',
     'checks_undo(text, text, uuid)',
     'mgr_checks_range(text, text, date, date)',
+    'mgr_new_checks_key(text, text)',
     'mgr_delete_check(text, uuid)'] loop
     execute 'revoke all on function ' || f || ' from public';
     if exists (select 1 from pg_roles where rolname = 'anon') then execute 'grant execute on function ' || f || ' to anon'; end if;

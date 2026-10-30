@@ -165,7 +165,7 @@ table.grid td:first-child,table.grid th:first-child{text-align:left}
 <section class="wrap gate" id="gate" hidden>
   <div class="card">
     <h2>Log in</h2>
-    <p class="lede">Type the team code from the HR Nonna group chat. This phone or tablet will remember it.</p>
+    <p class="lede">Open the page with the staff link from the HR Nonna group chat, or type the team code. This phone or tablet will remember it.</p>
     <form id="gate-form" class="row">
       <label for="g-code" style="flex:1 1 200px">Team code<input type="password" id="g-code" autocomplete="current-password" required></label>
       <button class="btn" type="submit">Open</button>
@@ -224,11 +224,13 @@ const saveDev=()=>{try{localStorage.setItem(LS,JSON.stringify(dev));}catch(e){}}
 const mine=(()=>{try{return JSON.parse(localStorage.getItem('ngc-checks-mine')||'{}')||{};}catch(e){return {};}})();
 const saveMine=()=>{const cut=Date.now()-15*60e3;for(const [k,t] of Object.entries(mine))if(t<cut)delete mine[k];try{localStorage.setItem('ngc-checks-mine',JSON.stringify(mine));}catch(e){}};
 
-const S={code:dev.code||null,mgr:dev.mgr||null,store:lsGet('ngc-checks-store')||(STORES[0]||{}).id,today:isoToday(),day:isoToday(),
+const linkKey=(()=>{const m=/[#&]k=([A-Za-z0-9_-]{16,})/.exec(location.hash||'');if(m){lsSet('ngc-checks-key',m[1]);return m[1];}return lsGet('ngc-checks-key');})();
+const S={code:dev.code||null,key:linkKey||null,mgr:dev.mgr||null,store:lsGet('ngc-checks-store')||(STORES[0]||{}).id,today:isoToday(),day:isoToday(),
   tab:lsGet('ngc-checks-tab')||'today',who:lsGet('ngc-checks-who')||'',staff:[],rows:[],periodic:[],loaded:false,offline:false,
   drafts:{},fixing:null,busy:new Set(),hist:{from:addDays(isoToday(),-6),to:isoToday(),store:null,rows:null,loading:false}};
 if(!STORES.some(s=>s.id===S.store))S.store=(STORES[0]||{}).id;
 
+const auth=()=>S.code||S.key;
 async function rpc(fn,args){
   const headers={'Content-Type':'application/json',apikey:CFG.key};
   if(String(CFG.key||'').startsWith('eyJ'))headers.Authorization='Bearer '+CFG.key;
@@ -286,13 +288,13 @@ const KIND={temp:'Temperature',clean:'Cleaning',toilet:'Toilet'};
 async function add(kind,item,slot,{value=null,ok=true,details={}}={}){
   if(needWho())return null;const p=whoPerson();const key=`${kind}|${item}|${slot}`;if(S.busy.has(key))return null;S.busy.add(key);renderPanels();
   try{
-    const row=await rpc('checks_add',{p:S.code,token:dev.token,store_id:S.store,day_in:S.day,kind_in:kind,item_in:item,slot_in:slot,value_in:value,ok_in:ok,details_in:details,staff_id_in:p.id,staff_name_in:p.short||p.name});
+    const row=await rpc('checks_add',{p:auth(),token:dev.token,store_id:S.store,day_in:S.day,kind_in:kind,item_in:item,slot_in:slot,value_in:value,ok_in:ok,details_in:details,staff_id_in:p.id,staff_name_in:p.short||p.name});
     S.rows.push(row);if(row.details&&row.details.every)S.periodic.push(row);mine[row.id]=Date.now();saveMine();S.offline=false;return row;
   }catch(e){toast(errText(e));return null;}
   finally{S.busy.delete(key);renderAll();}
 }
 async function undo(row){
-  try{await rpc('checks_undo',{p:S.code,token:dev.token,check_id:row.id});S.rows=S.rows.filter(x=>x.id!==row.id);S.periodic=S.periodic.filter(x=>x.id!==row.id);delete mine[row.id];saveMine();toast('Undone');}
+  try{await rpc('checks_undo',{p:auth(),token:dev.token,check_id:row.id});S.rows=S.rows.filter(x=>x.id!==row.id);S.periodic=S.periodic.filter(x=>x.id!==row.id);delete mine[row.id];saveMine();toast('Undone');}
   catch(e){toast(errText(e));}
   renderAll();
 }
@@ -302,7 +304,7 @@ const undoBtn=row=>canUndo(row)?h('button',{class:'link',type:'button',onclick:(
 // ---------- render: shell ----------
 const TABS=[['today','Today'],['temp','Temperatures'],['clean','Cleaning'],['toilet','Toilet'],['history','History']];
 function renderShell(){
-  const loggedIn=!!S.code;
+  const loggedIn=!!auth();
   $('#gate').hidden=loggedIn;document.querySelector('nav.tabs').hidden=!loggedIn;document.querySelector('main').hidden=!loggedIn;$('#foot').hidden=!loggedIn;
   $('#header-controls').hidden=!loggedIn;$('#who-row').hidden=!loggedIn;
   const st=STORES.find(s=>s.id===S.store);$('#eyebrow').textContent=`Nonna Goes Crazy${st?' · '+st.name:''}`;
@@ -482,6 +484,24 @@ async function delRow(r){
   try{await rpc('mgr_delete_check',{p:S.mgr,check_id:r.id});S.hist.rows=S.hist.rows.filter(x=>x.id!==r.id);S.rows=S.rows.filter(x=>x.id!==r.id);S.periodic=S.periodic.filter(x=>x.id!==r.id);toast('Removed');}catch(e){toast(errText(e));}
   renderAll();
 }
+const staffLink=k=>`${location.origin}/checks#k=${k}`;
+async function copyText(t){try{await navigator.clipboard.writeText(t);toast('Link copied. Paste it in the HR Nonna group chat.');}catch(e){prompt('Copy this link:',t);}}
+function staffLinkCard(){
+  const k=S.key;
+  return h('div',{class:'card noprint'},
+    h('div',{class:'cardhead'},h('h3',{},'Staff link'),h('span',{class:'chip'},'No code needed')),
+    h('p',{class:'small muted',style:'margin:0'},'Staff open the checks with this link, without typing anything. Share it only in the staff group. If it ever gets shared outside the team, make a new link: the old one stops working straight away.'),
+    k?h('div',{class:'small',style:'overflow-wrap:anywhere;font-weight:600'},staffLink(k)):h('p',{class:'small muted',style:'margin:0'},'This device has not opened the current link, so it cannot show it. Use the link you were sent, or make a new one.'),
+    h('div',{class:'row'},
+      k?h('button',{class:'btn small',type:'button',onclick:()=>copyText(staffLink(k))},'Copy link'):null,
+      h('button',{class:'btn small ghost',type:'button',onclick:newStaffLink},'Make a new link')));
+}
+async function newStaffLink(){
+  if(!confirm('Make a new staff link? The old link stops working, so you need to share the new one with the team.'))return;
+  const k=Array.from(crypto.getRandomValues(new Uint8Array(20)),b=>'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_'[b&63]).join('');
+  try{await rpc('mgr_new_checks_key',{p:S.mgr,new_key:k});S.key=k;lsSet('ngc-checks-key',k);history.replaceState(null,'','#k='+k);renderHistory();copyText(staffLink(k));}
+  catch(e){toast(errText(e));}
+}
 function renderHistory(){
   const p=$('#p-history');if(!S.mgr){p.replaceChildren();return;}
   const H=S.hist;
@@ -494,7 +514,7 @@ function renderHistory(){
       h('button',{class:'btn small',type:'button',onclick:loadHistory},H.loading?'Loading…':'Show'),
       h('button',{class:'btn small ghost',type:'button',disabled:!(H.rows&&H.rows.length)||null,onclick:exportCsv},'Download for Excel'),
       h('button',{class:'btn small ghost',type:'button',disabled:!(H.rows&&H.rows.length)||null,onclick:()=>{document.querySelectorAll('#p-history details').forEach(d=>d.open=true);window.print();}},'Print')));
-  const kids=[h('div',{},h('h2',{},'History'),h('p',{class:'lede'},'Only management sees this. Open a day to see every entry; remove one if it was a mistake.')),controls];
+  const kids=[staffLinkCard(),h('div',{},h('h2',{},'History'),h('p',{class:'lede'},'Only management sees this. Open a day to see every entry; remove one if it was a mistake.')),controls];
   if(H.rows){
     const stores=H.store?[H.store]:STORES.map(s=>s.id);const days=[];for(let d=H.to;d>=H.from;d=addDays(d,-1))days.push(d);
     const box=h('div',{class:'card'});
@@ -554,7 +574,9 @@ function softRender(){if(typing()){pendingRender=true;return;}renderAll();}
 document.addEventListener('focusout',()=>setTimeout(()=>{if(pendingRender&&!typing()){pendingRender=false;renderAll();}},200));
 
 // ---------- login ----------
-function logout(){S.code=null;S.mgr=null;delete dev.code;delete dev.mgr;delete dev.me;saveDev();S.rows=[];S.loaded=false;renderAll();}
+function logout(){const viaLink=!S.code&&!!S.key;S.code=null;S.key=null;S.mgr=null;delete dev.code;delete dev.mgr;delete dev.me;saveDev();
+  try{localStorage.removeItem('ngc-checks-key');}catch(e){}if(/[#&]k=/.test(location.hash))history.replaceState(null,'',location.pathname);
+  S.rows=[];S.loaded=false;renderAll();if(viaLink)$('#g-msg').textContent='This link no longer works. Ask the manager for the new staff link.';}
 function logoutMgr(){S.mgr=null;delete dev.mgr;saveDev();if(S.tab==='history')S.tab='today';renderAll();}
 $('#logout-btn').addEventListener('click',logout);
 $('#gate-form').addEventListener('submit',async e=>{
@@ -575,9 +597,9 @@ $('#mgr-btn').addEventListener('click',async()=>{
 // ---------- sync ----------
 let refreshing=null;
 async function refresh(){
-  if(!S.code||!CFG.url)return;if(refreshing)return refreshing;
+  if(!auth()||!CFG.url)return;if(refreshing)return refreshing;
   refreshing=(async()=>{
-    try{const day=S.day,store=S.store;const b=await rpc('checks_day',{p:S.code,store_id:store,day_in:day});
+    try{const day=S.day,store=S.store;const b=await rpc('checks_day',{p:auth(),store_id:store,day_in:day});
       if(day!==S.day||store!==S.store)return;
       const newToday=b.today||isoToday();if(newToday!==S.today){const wasToday=S.day===S.today;S.today=newToday;if(wasToday){S.day=newToday;S.drafts={};refreshing=null;return refresh();}}
       S.staff=b.staff||[];S.rows=b.rows||[];S.periodic=b.periodic||[];S.loaded=true;S.offline=false;
@@ -586,9 +608,11 @@ async function refresh(){
   })();
   try{await refreshing;}finally{refreshing=null;}
 }
+window.addEventListener('hashchange',()=>{const m=/[#&]k=([A-Za-z0-9_-]{16,})/.exec(location.hash||'');if(!m||m[1]===S.key)return;
+  S.key=m[1];lsSet('ngc-checks-key',m[1]);$('#g-msg').textContent='';S.loaded=false;renderAll();refresh();});
 async function boot(){
   renderAll();if(!CFG.url||!CFG.key){$('#g-msg').textContent='The database connection is missing.';return;}
-  if(S.code)await refresh();
+  if(auth())await refresh();
   if(S.mgr&&S.tab==='history')loadHistory();
   setInterval(()=>{if(document.visibilityState==='visible')refresh();},30000);
   document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')refresh();});
