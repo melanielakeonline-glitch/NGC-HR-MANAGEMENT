@@ -38,9 +38,43 @@ window.CHECKS_CONFIG = {
   // every: 'day' (at closing), 'week' (once Monday–Sunday) or 'month' (once per calendar month).
   // days (optional, daily groups only): weekdays it applies, 0 = Sunday … 6 = Saturday.
   // who: the role that normally does it (shown as a label).
+  // shift: which section of the Cleaning tab it sits in (see cleaningShifts); when: shown under the title.
+  cleaningShifts: [
+    { id: 'lunch', label: 'Lunch shift', short: 'Lunch' },
+    { id: 'dinner', label: 'Evening shift', short: 'Evening' },
+    { id: 'production', label: 'Production', short: 'Production' }
+  ],
   cleaning: [
     {
-      id: 'kitchen', label: 'Kitchen', who: 'Chef', every: 'day', tasks: [
+      id: 'kitchen-lunch', label: 'Kitchen', who: 'Chef', shift: 'lunch', when: 'End of lunch, before the break', every: 'day', days: [0, 2, 3, 4, 5, 6], tasks: [
+        { id: 'kl-covered', name: 'Sauces, toppings, burrata and pancetta covered or closed; everything that needs cold back in the fridge. Nothing left open on the line' },
+        { id: 'kl-dates', name: 'Dates checked on the line; anything expired thrown away. Oldest products in front (FIFO)' },
+        { id: 'kl-stoves', name: 'Electric stoves switched off and wiped' },
+        { id: 'kl-toaster', name: 'Toaster switched off, crumbs removed' },
+        { id: 'kl-counters', name: 'Counters and cutting boards washed with soap and disinfected' },
+        { id: 'kl-splash', name: 'Splash areas and fridge door handles wiped' },
+        { id: 'kl-tools', name: 'Used pans, tools and pasta containers washed (or in the dishwasher)' },
+        { id: 'kl-sink', name: 'Kitchen sink cleared and cleaned; hand soap and paper towels refilled' },
+        { id: 'kl-floor', name: 'Spills on the kitchen floor cleaned, floor behind the line swept' },
+        { id: 'kl-restock', name: 'Station restocked for dinner: toppings, squeeze bottles and sauces checked, refilled and labelled where needed' }
+      ]
+    },
+    {
+      id: 'front-lunch', label: 'Cashier and dining room', who: 'Cashier', shift: 'lunch', when: 'End of lunch, before the break', every: 'day', days: [0, 2, 3, 4, 5, 6], tasks: [
+        { id: 'fl-outside', name: 'Outside tables and chairs cleaned and brought inside' },
+        { id: 'fl-tables', name: 'Dining tables, chairs and trays cleaned' },
+        { id: 'fl-dishes', name: 'Dishes washed, dishwasher emptied, clean items put away' },
+        { id: 'fl-sinks', name: 'Upstairs and downstairs sinks cleared and cleaned' },
+        { id: 'fl-counter', name: 'Cashier counter, card machine and screen wiped' },
+        { id: 'fl-restock', name: 'Cashier station restocked for dinner: napkins, cups, forks, delivery bags and boxes' },
+        { id: 'fl-fridges', name: 'Drink fridges restocked and doors fully closed' },
+        { id: 'fl-ice', name: 'Ice from the bucket back in the ice bag in the freezer' },
+        { id: 'fl-floor', name: 'Restaurant floor swept, spills mopped' },
+        { id: 'fl-bins', name: 'Rubbish taken out; glass and organic separated' }
+      ]
+    },
+    {
+      id: 'kitchen', label: 'Kitchen', who: 'Chef', shift: 'dinner', when: 'Closing', every: 'day', tasks: [
         { id: 'k-covered', name: 'All sauces and toppings closed, covered and in the fridge. Nothing left out' },
         { id: 'k-labels', name: 'Everything kept for tomorrow is labelled (panzerotti, parmesan, basil oil…). Expiry = 3 days, today included' },
         { id: 'k-dates', name: 'Dates checked: expired products thrown away, oldest in front (FIFO)' },
@@ -59,7 +93,7 @@ window.CHECKS_CONFIG = {
       ]
     },
     {
-      id: 'front', label: 'Cashier and dining room', who: 'Cashier', every: 'day', tasks: [
+      id: 'front', label: 'Cashier and dining room', who: 'Cashier', shift: 'dinner', when: 'Closing', every: 'day', tasks: [
         { id: 'f-dishwasher', name: 'Dishwasher: both filters cleaned, drained, inside wiped, filters back' },
         { id: 'f-dishes', name: 'All dishes washed and put away; pans clean, dry and hanging' },
         { id: 'f-sinks', name: 'Upstairs and downstairs sinks cleaned and dried' },
@@ -67,12 +101,13 @@ window.CHECKS_CONFIG = {
         { id: 'f-fridges', name: 'Drink fridges (upstairs and downstairs) restocked and doors fully closed' },
         { id: 'f-ice', name: 'Ice from the bucket back in the ice bag in the freezer' },
         { id: 'f-outside', name: 'Outside tables cleaned and brought inside; chairs up' },
+        { id: 'f-lamps', name: 'Lamps brought inside, cleaned if needed and put on charge' },
         { id: 'f-floors', name: 'Kitchen and restaurant floors swept and mopped; dirty water emptied, mop stored' },
         { id: 'f-bins', name: 'Both downstairs bins emptied; glass and organic separated' }
       ]
     },
     {
-      id: 'production', label: 'Production', who: 'Production', every: 'day', days: [0, 2, 3, 4, 5, 6], tasks: [
+      id: 'production', label: 'Pasta and sauces', who: 'Production', shift: 'production', when: 'End of production', every: 'day', days: [0, 2, 3, 4, 5, 6], tasks: [
         { id: 'p-machine', name: 'Pasta machine cleaned inside, no hardened pasta left' },
         { id: 'p-dies', name: 'Dies cleaned and back in water' },
         { id: 'p-labels', name: 'Old labels removed; new production label on every container. Expiry = 3 days, today included' },

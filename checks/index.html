@@ -255,6 +255,8 @@ function needWho(){if(whoPerson())return false;toast("First choose who's doing t
 // ---------- data helpers ----------
 const latest=(kind,item,slot)=>{let r=null;for(const x of S.rows)if(x.kind===kind&&x.item===item&&(x.slot||'')===(slot||''))r=x;return r;};
 const entriesFor=(kind,item,slot)=>S.rows.filter(x=>x.kind===kind&&x.item===item&&(x.slot||'')===(slot||''));
+const SHIFTS=C.cleaningShifts||[];
+const shiftOf=g=>SHIFTS.find(x=>x.id===g.shift)||null;
 const dailyGroups=day=>(C.cleaning||[]).filter(g=>(g.every||'day')==='day'&&(!g.days||g.days.includes(weekday(day))));
 const periodGroups=()=>(C.cleaning||[]).filter(g=>g.every==='week'||g.every==='month');
 const lastOfMonth=iso=>{const [y,m]=iso.split('-').map(Number);return new Date(Date.UTC(y,m,0)).toISOString().slice(0,10);};
@@ -279,7 +281,7 @@ const itemName=(kind,item,slot)=>{
 };
 const slotName=(kind,slot)=>{
   if(kind==='temp')return ((C.temperatures.times||[]).find(t=>t.id===slot)||{}).label||slot;
-  if(kind==='clean')return ((C.cleaning||[]).find(g=>g.id===slot)||{}).label||slot;
+  if(kind==='clean'){const g=(C.cleaning||[]).find(x=>x.id===slot);if(!g)return slot;const sh=shiftOf(g);return sh&&g.every!=='week'&&g.every!=='month'?`${sh.label} · ${g.label}`:g.label;}
   return ((C.toilet.checks||[]).find(c=>c.id===slot)||{}).label||slot;
 };
 const KIND={temp:'Temperature',clean:'Cleaning',toilet:'Toilet'};
@@ -343,7 +345,9 @@ function renderToday(){
       r.kind==='temp'?`${itemName('temp',r.item)} (${slotName('temp',r.slot)}): ${fmtTemp(r.value)} · ${r.details.action||''}`:`${slotName('toilet',r.slot)}: ${r.details.action||'not complete'}`)))):null,
     h('div',{class:'sum'},
       card('temp','Temperatures',pr.tDone,pr.tAll,h('div',{class:'small muted'},C.temperatures.times.map(t=>{const u=forStore(C.temperatures.units,S.store);const d=u.filter(x=>latest('temp',x.id,t.id)).length;return `${t.label}: ${d}/${u.length}`;}).join(' · '))),
-      card('clean','Cleaning',pr.cDone,pr.cAll,h('div',{class:'small muted'},[...dailyGroups(S.day).map(g=>{const t=forStore(g.tasks,S.store);const d=t.filter(x=>latest('clean',x.id,g.id)).length;return `${g.label}: ${d}/${t.length}`;}),
+      card('clean','Cleaning',pr.cDone,pr.cAll,h('div',{class:'small muted'},[...(()=>{const out=[];const gs=dailyGroups(S.day);const keys=[...new Set(gs.map(g=>g.shift||''))];
+          for(const k of keys){let d=0,n=0;for(const g of gs.filter(x=>(x.shift||'')===k)){const t=forStore(g.tasks,S.store);n+=t.length;d+=t.filter(x=>latest('clean',x.id,g.id)).length;}
+            const sh=SHIFTS.find(x=>x.id===k);out.push(`${sh?sh.short:'Other'}: ${d}/${n}`);}return out;})(),
         ...periodGroups().map(g=>{const [d,n]=periodCount(g,S.store,S.day,allClean());return `${g.every==='week'?'This week':'This month'}: ${d}/${n}`;})].join(' · '))),
       card('toilet','Toilet',pr.wDone,pr.wAll,toiletLine)
     ));
@@ -403,14 +407,21 @@ async function saveTemp(u,t){
 // ---------- render: cleaning ----------
 function renderClean(){
   const p=$('#p-clean');const rows=allClean();
-  const daily=dailyGroups(S.day).map(g=>{
+  const daily=[];let lastShift=null;
+  for(const g of dailyGroups(S.day)){
+    const sh=shiftOf(g);if(sh&&sh.id!==lastShift){
+      const gs=dailyGroups(S.day).filter(x=>x.shift===sh.id);let d=0,n=0;for(const x of gs){const t=forStore(x.tasks,S.store);n+=t.length;d+=t.filter(y=>latest('clean',y.id,x.id)).length;}
+      daily.push(h('div',{class:'cardhead',style:'margin-top:8px'},h('h2',{},sh.label),h('span',{class:'chip'+(d>=n?'':' todo')},d>=n?'Done':`${d}/${n}`)));}
+    lastShift=sh?sh.id:null;daily.push(dailyCard(g));
+  }
+  function dailyCard(g){
     const tasks=forStore(g.tasks,S.store);const done=tasks.filter(t=>latest('clean',t.id,g.id)).length;
     return h('div',{class:'card'},
       h('div',{class:'cardhead'},h('h3',{},g.label),h('span',{class:'chip'+(done>=tasks.length?'':' todo')},`${done}/${tasks.length}`)),
-      g.who?h('p',{class:'small muted',style:'margin:-6px 0 0'},`${g.who} · at closing`):null,
+      g.who?h('p',{class:'small muted',style:'margin:-6px 0 0'},`${g.who} · ${(g.when||'at closing').toLowerCase()}`):null,
       h('div',{class:'bar'},h('span',{style:`width:${tasks.length?Math.round(done/tasks.length*100):0}%`})),
       ...tasks.map(t=>taskRow(g,t,latest('clean',t.id,g.id))));
-  });
+  }
   const periodic=periodGroups().map(g=>{
     const tasks=forStore(g.tasks,S.store);const [done,all]=periodCount(g,S.store,S.day,rows);const end=periodEnd(g,S.day);
     return h('div',{class:'card'},
