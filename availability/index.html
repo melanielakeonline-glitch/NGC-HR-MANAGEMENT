@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Availability · NGC</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,700,100;9..144,900,100&family=Outfit:wght@400;500;600;700&display=swap">
+<link rel="icon" type="image/png" href="/stars/favicon.png">
+<link rel="apple-touch-icon" href="/stars/ngc-icon.png">
+<meta name="theme-color" content="#FFC95C">
+<style>
+:root{
+  --bg:#FBF9FD; --surface:#FFFFFF; --ink:#24123A; --muted:#6E6283; --line:#E6DEF0;
+  --accent:#3E1466; --accent-soft:#EFE9F7; --on-accent:#FFFFFF;
+  --ok:#2E7A4C; --ok-soft:#E3F2E8; --warn:#B3261E; --warn-soft:#FCE8E6; --gold:#9A6A00; --gold-soft:#FFF3D1;
+  --lunch:#0E6E8E; --lunch-soft:#DDF1F8; --eve:#5B2A86; --eve-soft:#EBE0F7;
+  --brand:#3E1466; --brand-yellow:#FFC95C;
+  --display:"Fraunces",Georgia,"Times New Roman",serif;
+  --body:"Outfit",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root{
+  --bg:#140D1D; --surface:#1E1529; --ink:#F1ECF8; --muted:#B3A7C6; --line:#33284A;
+  --accent:#C9B5F2; --accent-soft:#2C2142; --on-accent:#1A0F2B;
+  --ok:#6CCB92; --ok-soft:#1C3326; --warn:#FF9C92; --warn-soft:#3D1B19; --gold:#FFC95C; --gold-soft:#3A2E12;
+  --lunch:#7CCBE6; --lunch-soft:#13303B; --eve:#C9B5F2; --eve-soft:#2C2142; color-scheme:dark}}
+[hidden]{display:none!important}
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5}
+.wrap{max-width:720px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+body.wide .wrap{max-width:1000px}
+.top{background:var(--brand-yellow);color:var(--brand)}
+.top .wrap{padding-block:22px 18px;display:grid;gap:12px}
+.brandrow{display:flex;gap:12px;align-items:center}
+.brand-icon{width:52px;height:52px;flex:0 0 52px}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;margin:0;opacity:.88}
+h1{font-family:var(--display);font-weight:900;font-variation-settings:'SOFT' 100;font-size:clamp(36px,9vw,52px);line-height:.95;margin:0;letter-spacing:-.02em}
+.daterow{margin:0;font-weight:600}
+.seg{display:inline-flex;flex-wrap:wrap;gap:4px;padding:4px;border-radius:999px;background:rgba(62,20,102,.1)}
+.seg button{border:0;background:transparent;color:var(--brand);font:600 14px var(--body);padding:6px 13px;border-radius:999px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--brand);color:#fff}
+.who{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center}
+.who label{font-weight:700;font-size:14px;color:var(--brand)}
+.who select{font:600 15px var(--body);color:#24123A;background:#fff;border:2px solid var(--brand);border-radius:10px;padding:8px 10px;min-width:200px;max-width:100%}
+.who select.need{border-color:#B3261E;box-shadow:0 0 0 3px rgba(179,38,30,.25)}
+nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+nav.tabs .wrap{display:flex;gap:2px;overflow-x:auto}
+nav.tabs button{border:0;background:transparent;color:var(--muted);font:600 15px var(--body);padding:13px 9px 11px;border-bottom:3px solid transparent;cursor:pointer;white-space:nowrap}
+nav.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+main .wrap{padding-block:18px 56px;display:grid;gap:16px}
+section.panel{display:grid;gap:16px}
+h2{font-family:var(--display);font-weight:800;font-size:24px;line-height:1.1;margin:0}
+h3{font-family:var(--display);font-weight:700;font-size:19px;margin:0}
+.lede{margin:0;color:var(--muted)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;display:grid;gap:12px;min-width:0}
+.card.okbox{border-color:color-mix(in srgb,var(--ok) 45%,transparent);background:var(--ok-soft)}
+.card.warnbox{border-color:color-mix(in srgb,var(--warn) 45%,transparent);background:var(--warn-soft)}
+.card.goldbox{border-color:color-mix(in srgb,var(--gold) 45%,transparent);background:var(--gold-soft)}
+.cardhead{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.muted{color:var(--muted)}
+.small{font-size:13px}
+.btn{background:var(--accent);color:var(--on-accent);border:0;border-radius:999px;padding:10px 18px;font:700 15px var(--body);cursor:pointer}
+.btn.ghost{background:transparent;color:var(--accent);border:1.5px solid var(--accent)}
+.btn.small{padding:6px 12px;font-size:13px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.link{background:none;border:0;color:var(--muted);font:600 13px var(--body);cursor:pointer;padding:2px 4px;text-decoration:underline}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+label{font-weight:600;font-size:13px;display:grid;gap:6px}
+input[type=password],textarea{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px;width:100%}
+textarea{resize:vertical;min-height:64px}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.chip{font:700 11px var(--body);letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:999px;background:var(--ok-soft);color:var(--ok);white-space:nowrap}
+.chip.warn{background:var(--warn-soft);color:var(--warn)}
+.chip.todo{background:var(--gold-soft);color:var(--gold)}
+.chip.lunch{background:var(--lunch-soft);color:var(--lunch)}
+.chip.eve{background:var(--eve-soft);color:var(--eve)}
+/* calendar */
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.cal .dow{text-align:center;font:700 11px var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding-bottom:2px}
+.cal .day{aspect-ratio:1/1;min-height:44px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:12px;display:grid;place-items:center;align-content:center;gap:1px;cursor:pointer;font:700 16px var(--body);padding:0;position:relative}
+.cal .day small{font:600 9.5px var(--body);letter-spacing:.04em;text-transform:uppercase;line-height:1}
+.cal .day.empty{visibility:hidden}
+.cal .day.past{opacity:.35}
+.cal .day[data-s="day"]{background:var(--warn);border-color:var(--warn);color:#fff}
+.cal .day[data-s="lunch"]{background:var(--lunch-soft);border-color:var(--lunch);color:var(--lunch)}
+.cal .day[data-s="eve"]{background:var(--eve-soft);border-color:var(--eve);color:var(--eve)}
+.cal .day.weekend:not([data-s]){background:color-mix(in srgb,var(--line) 35%,var(--surface))}
+.cal .day:disabled{cursor:default}
+.legend{display:flex;flex-wrap:wrap;gap:8px 14px;font-size:13px;color:var(--muted)}
+.legend i{display:inline-block;width:14px;height:14px;border-radius:4px;vertical-align:-2px;margin-right:5px;border:1.5px solid var(--line)}
+.legend i.day{background:var(--warn);border-color:var(--warn)}.legend i.lunch{background:var(--lunch-soft);border-color:var(--lunch)}.legend i.eve{background:var(--eve-soft);border-color:var(--eve)}
+.summary{display:grid;gap:4px;font-size:14px}
+.summary b{font-weight:700}
+/* manager */
+table.grid{border-collapse:collapse;width:100%;font-size:14px}
+table.grid th,table.grid td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+table.grid th{font:700 11px var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+table.grid tr.click{cursor:pointer}
+table.grid tr.sel td{background:var(--accent-soft)}
+.dayline{display:flex;flex-wrap:wrap;gap:6px}
+.dtag{font:600 12px var(--body);padding:2px 8px;border-radius:999px;border:1px solid var(--line);background:var(--surface)}
+.dtag.day{background:var(--warn-soft);color:var(--warn);border-color:transparent}.dtag.lunch{background:var(--lunch-soft);color:var(--lunch);border-color:transparent}.dtag.eve{background:var(--eve-soft);color:var(--eve);border-color:transparent}
+.gate .card{margin-top:18px}
+.offline{padding:10px 12px;border-radius:12px;background:var(--gold-soft);color:var(--gold);font-weight:600}
+footer.foot{display:flex;flex-wrap:wrap;gap:6px 14px;justify-content:center;padding-block:10px 32px}
+#toast{position:fixed;left:50%;bottom:max(20px,env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:999px;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.25);display:flex;gap:12px;align-items:center;max-width:92vw;z-index:20}
+#toast button{background:transparent;border:0;color:var(--brand-yellow);font:700 14px var(--body);cursor:pointer}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <div class="brandrow">
+      <img class="brand-icon" src="/stars/ngc-icon.png" alt="">
+      <div>
+        <p class="eyebrow" id="eyebrow">Nonna Goes Crazy</p>
+        <h1>Availability</h1>
+      </div>
+    </div>
+    <p class="daterow" id="daterow"></p>
+    <div class="row" id="header-controls" hidden>
+      <div class="seg" id="month-seg" role="group" aria-label="Month"></div>
+    </div>
+    <div class="who" id="who-row" hidden>
+      <label for="who">Who are you?</label>
+      <select id="who"></select>
+    </div>
+  </div>
+</header>
+
+<section class="wrap gate" id="gate" hidden>
+  <div class="card">
+    <h2>Log in</h2>
+    <p class="lede">Open the page with the staff link from the HR Nonna group chat, or type the team code. This phone will remember it.</p>
+    <form id="gate-form" class="row">
+      <label for="g-code" style="flex:1 1 200px">Team code<input type="password" id="g-code" autocomplete="current-password" required></label>
+      <button class="btn" type="submit">Open</button>
+    </form>
+    <p class="small muted" id="g-msg" role="status"></p>
+  </div>
+</section>
+
+<nav class="tabs" hidden><div class="wrap" role="tablist" id="tabs"></div></nav>
+
+<main hidden>
+  <div class="wrap">
+    <div class="offline" id="offline" hidden>Can't reach the database right now. Try again in a moment.</div>
+    <section class="panel" id="p-mine" hidden></section>
+    <section class="panel" id="p-team" hidden></section>
+  </div>
+</main>
+
+<footer class="wrap foot" id="foot" hidden>
+  <button class="link" type="button" id="mgr-btn">Manager login</button>
+  <a class="link" href="/">Schedule</a>
+  <a class="link" href="/checks">Daily checks</a>
+  <a class="link" href="/stars">Our Stars</a>
+  <button class="link" type="button" id="logout-btn">Log out</button>
+</footer>
+<div id="toast" role="status" aria-live="polite" hidden></div>
+
+<script src="/stars/config.js"></script>
+<script>
+const CFG=window.STARS_CONFIG||{};
+const TZ='Europe/Lisbon';
+const $=s=>document.querySelector(s);
+function h(tag,props,...kids){const el=document.createElement(tag);for(const [k,v] of Object.entries(props||{})){if(v==null||v===false)continue;if(k==='class')el.className=v;else if(k==='text')el.textContent=v;else if(k.startsWith('on'))el.addEventListener(k.slice(2),v);else el.setAttribute(k,v===true?'':v);}for(const c of kids.flat()){if(c==null||c===false)continue;el.append(c.nodeType?c:document.createTextNode(String(c)));}return el;}
+const lsGet=k=>{try{return localStorage.getItem(k)}catch(e){return null}};
+const lsSet=(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}};
+const isoToday=()=>new Intl.DateTimeFormat('en-CA',{timeZone:TZ,year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
+const fmtDate=(iso,opts)=>new Date(iso+'T12:00:00Z').toLocaleDateString('en-GB',Object.assign({timeZone:'UTC',weekday:'long',day:'numeric',month:'long'},opts||{}));
+const fmtShort=iso=>fmtDate(iso,{weekday:'short',day:'numeric',month:'short'});
+const fmtMonth=ym=>new Date(ym+'-01T12:00:00Z').toLocaleDateString('en-GB',{timeZone:'UTC',month:'long',year:'numeric'});
+const fmtTime=ts=>new Date(ts).toLocaleString('en-GB',{timeZone:TZ,day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+const addMonths=(ym,n)=>{const [y,m]=ym.split('-').map(Number);const d=new Date(Date.UTC(y,m-1+n,1));return d.toISOString().slice(0,7);};
+const daysIn=ym=>{const [y,m]=ym.split('-').map(Number);return new Date(Date.UTC(y,m,0)).getUTCDate();};
+const dow=iso=>new Date(iso+'T12:00:00Z').getUTCDay(); // 0 Sun
+const deadlineOf=ym=>addMonths(ym,-1)+'-10';
+
+// Shared with the Stars board and the checks page: same staff link, team code, manager password, device id.
+const LS='ngc-stars';
+const dev=(()=>{let d={};try{d=JSON.parse(localStorage.getItem(LS)||'{}')||{};}catch(e){}
+  if(!d.token)d.token=Array.from(crypto.getRandomValues(new Uint8Array(24)),b=>b.toString(16).padStart(2,'0')).join('');return d;})();
+const saveDev=()=>{try{localStorage.setItem(LS,JSON.stringify(dev));}catch(e){}};saveDev();
+const linkKey=(()=>{const m=/[#&]k=([A-Za-z0-9_-]{16,})/.exec(location.hash||'');if(m){lsSet('ngc-checks-key',m[1]);return m[1];}return lsGet('ngc-checks-key');})();
+
+const today=isoToday();
+const thisMonth=today.slice(0,7);
+const MONTHS=[thisMonth,addMonths(thisMonth,1),addMonths(thisMonth,2)];
+const defaultMonth=()=>MONTHS.find(m=>today<=deadlineOf(m))||MONTHS[1];
+const S={code:dev.code||null,key:linkKey||null,mgr:dev.mgr||null,month:lsGet('ngc-avail-month')||defaultMonth(),tab:lsGet('ngc-avail-tab')||'mine',
+  who:lsGet('ngc-checks-who')||lsGet('ngc-avail-who')||'',staff:[],submitted:[],mine:null,locked:false,deadline:null,loaded:false,offline:false,
+  draft:null,dirty:false,saving:false,team:{month:null,rows:null,loading:false,sel:null}};
+if(!MONTHS.includes(S.month))S.month=defaultMonth();
+
+const auth=()=>S.code||S.key;
+async function rpc(fn,args){
+  const headers={'Content-Type':'application/json',apikey:CFG.key};
+  if(String(CFG.key||'').startsWith('eyJ'))headers.Authorization='Bearer '+CFG.key;
+  let res;try{res=await fetch(`${String(CFG.url).replace(/\/$/,'')}/rest/v1/rpc/${fn}`,{method:'POST',headers,body:JSON.stringify(args||{})});}catch(e){throw {code:'offline'};}
+  const txt=await res.text();let body=null;try{body=txt?JSON.parse(txt):null;}catch(e){}
+  if(!res.ok)throw {code:(body&&body.message)||'error',status:res.status};
+  return body;
+}
+const ERR={bad_code:'That team code is not right.',bad_password:'That manager password is not right.',locked:'This month is closed. Message Melanie if something changed.',
+  name_needed:'Choose your name first.',bad_days:'Something is wrong with the days. Reload and try again.',
+  offline:"Can't reach the database. Check the connection and try again.",'Could not find the function':'The availability database is not set up yet. Tell the manager.'};
+function errText(e){const c=(e&&e.code)||'';if(c==='bad_code')logout();if(c==='bad_password')logoutMgr();
+  for(const [k,v] of Object.entries(ERR))if(c===k||c.startsWith(k))return v;return "Couldn't save. Check the connection and try again.";}
+let toastT;function toast(msg){const t=$('#toast');t.replaceChildren(h('span',{},msg));t.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>t.hidden=true,3500);}
+
+const whoPerson=()=>S.staff.find(p=>p.id===S.who)||null;
+const canEdit=()=>!!whoPerson()&&(!S.locked||!!S.mgr);
+const STATES=['','day','eve','lunch'];
+const LABEL={day:'Whole day',eve:'No evening',lunch:'No lunch'};
+const SHORT={day:'off',eve:'no eve',lunch:'no lunch'};
+
+// ---------- shell ----------
+function renderShell(){
+  const loggedIn=!!auth();
+  $('#gate').hidden=loggedIn;document.querySelector('nav.tabs').hidden=!loggedIn;document.querySelector('main').hidden=!loggedIn;$('#foot').hidden=!loggedIn;
+  $('#header-controls').hidden=!loggedIn;$('#who-row').hidden=!loggedIn;
+  $('#daterow').textContent=`Tell us when you can't work in ${fmtMonth(S.month)}`;
+  $('#month-seg').replaceChildren(...MONTHS.map(m=>h('button',{type:'button','aria-pressed':String(S.month===m),onclick:()=>{if(S.dirty&&!confirm('You have unsaved changes. Leave without saving?'))return;S.month=m;lsSet('ngc-avail-month',m);S.draft=null;S.dirty=false;S.loaded=false;S.team.rows=null;renderAll();refresh();if(S.tab==='team')loadTeam();}},fmtMonth(m).replace(/ \d{4}$/,''))));
+  const sel=$('#who');const keep=S.who;
+  sel.replaceChildren(h('option',{value:''},'Choose your name'),...S.staff.map(p=>h('option',{value:p.id},p.name)));
+  sel.value=S.staff.some(p=>p.id===keep)?keep:'';
+  const tabs=[['mine','My availability']];if(S.mgr)tabs.push(['team','Team']);
+  if(!tabs.some(([id])=>id===S.tab))S.tab='mine';
+  $('#tabs').replaceChildren(...tabs.map(([id,l])=>h('button',{type:'button',role:'tab','aria-selected':String(S.tab===id),onclick:()=>{S.tab=id;lsSet('ngc-avail-tab',id);renderAll();window.scrollTo({top:0});if(id==='team'&&!S.team.rows)loadTeam();}},l)));
+  $('#p-mine').hidden=S.tab!=='mine';$('#p-team').hidden=S.tab!=='team';
+  $('#mgr-btn').textContent=S.mgr?'Manager: log out':'Manager login';
+  $('#offline').hidden=!S.offline;
+  document.body.classList.toggle('wide',S.tab==='team');
+}
+$('#who').addEventListener('change',e=>{if(S.dirty&&!confirm('You have unsaved changes. Switch name without saving?')){e.target.value=S.who;return;}S.who=e.target.value;lsSet('ngc-avail-who',S.who);e.target.classList.remove('need');S.draft=null;S.dirty=false;S.mine=null;renderAll();refresh();});
+
+// ---------- my availability ----------
+function draft(){if(!S.draft)S.draft={days:Object.assign({},(S.mine&&S.mine.days)||{}),note:(S.mine&&S.mine.note)||''};return S.draft;}
+function renderMine(){
+  const p=$('#p-mine');const kids=[];
+  const who=whoPerson();const dl=S.deadline||deadlineOf(S.month);
+  if(!S.loaded&&auth()){kids.push(h('p',{class:'lede'},'Loading…'));p.replaceChildren(...kids);return;}
+  // status card
+  if(!who){kids.push(h('div',{class:'card goldbox'},h('h3',{},'Choose your name at the top'),h('p',{class:'lede'},`Then tap the days in ${fmtMonth(S.month)} you can't work and press Save.`)));}
+  else if(S.locked&&!S.mgr){kids.push(h('div',{class:'card warnbox'},h('h3',{},`${fmtMonth(S.month)} is closed`),h('p',{class:'lede'},`The deadline was ${fmtDate(dl)}. ${S.mine?'Below is what you sent in.':"Nothing was sent in, so you're scheduled as fully available."} If something changed, message Melanie.`)));}
+  else if(S.mine){kids.push(h('div',{class:'card okbox'},h('div',{class:'cardhead'},h('h3',{},'Sent in ✓'),h('span',{class:'small muted'},fmtTime(S.mine.updatedAt))),h('p',{class:'lede'},`You can still change it until ${fmtDate(dl)}.${S.mine.byManager?' Last edited by management.':''}`)));}
+  else{kids.push(h('div',{class:'card goldbox'},h('h3',{},`Not sent in yet`),h('p',{class:'lede'},`Deadline: ${fmtDate(dl)}. Tap the days you can't work, then Save. Nothing to add? Just press Save — that tells us you're available all month.`)));}
+  if(who&&S.locked&&S.mgr)kids.push(h('div',{class:'card goldbox'},h('p',{class:'small',style:'margin:0;font-weight:600'},'Locked for staff — you are editing as management.')));
+
+  // calendar
+  const d=draft();const editable=canEdit();
+  const n=daysIn(S.month);const first=S.month+'-01';const lead=(dow(first)+6)%7;
+  const cells=[...['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(x=>h('div',{class:'dow'},x))];
+  for(let i=0;i<lead;i++)cells.push(h('div',{class:'day empty'}));
+  for(let i=1;i<=n;i++){
+    const iso=S.month+'-'+String(i).padStart(2,'0');const st=d.days[iso]||'';const wd=dow(iso);
+    cells.push(h('button',{type:'button',class:'day'+((wd===0||wd===6)?' weekend':'')+(iso<today?' past':''),'data-s':st||null,disabled:!editable,
+      'aria-label':`${fmtDate(iso)}${st?', '+LABEL[st]:''}`,
+      onclick:()=>{const next=STATES[(STATES.indexOf(st)+1)%STATES.length];if(next)d.days[iso]=next;else delete d.days[iso];S.dirty=true;renderMine();}},
+      String(i),st?h('small',{},SHORT[st]):null));
+  }
+  const list=Object.entries(d.days).sort();
+  kids.push(h('div',{class:'card'},
+    h('div',{class:'cardhead'},h('h3',{},fmtMonth(S.month)),h('span',{class:'small muted'},editable?'Tap a day to change it':'')),
+    h('div',{class:'cal'},...cells),
+    h('div',{class:'legend'},h('span',{},h('i',{}),'Available'),h('span',{},h('i',{class:'day'}),'Whole day off'),h('span',{},h('i',{class:'eve'}),"Can't do the evening"),h('span',{},h('i',{class:'lunch'}),"Can't do lunch")),
+    h('p',{class:'small muted',style:'margin:0'},'Tap once = whole day off, twice = evening only, three times = lunch only, four times = back to available. Your usual days off are already known — only add the extra days.')));
+
+  // summary + note + save
+  kids.push(h('div',{class:'card'},
+    h('h3',{},list.length?`${list.length} day${list.length===1?'':'s'} marked`:'No days marked'),
+    list.length?h('div',{class:'dayline'},...list.map(([iso,st])=>h('span',{class:'dtag '+st},`${fmtShort(iso)} · ${LABEL[st]}`))):h('p',{class:'lede small'},'You are available every day this month.'),
+    h('label',{},'Note for Melanie (optional)',h('textarea',{id:'note',maxlength:'500',placeholder:'e.g. exam on the 5th, only until 22:00 on the 12th…',disabled:!editable,oninput:e=>{d.note=e.target.value;S.dirty=true;}},d.note)),
+    h('div',{class:'row'},
+      h('button',{type:'button',class:'btn',disabled:!editable||S.saving,onclick:save},S.saving?'Saving…':S.mine?'Save changes':'Save and send in'),
+      S.dirty?h('button',{type:'button',class:'btn ghost',onclick:()=>{S.draft=null;S.dirty=false;renderMine();}},'Undo changes'):null,
+      S.dirty?h('span',{class:'chip todo'},'Not saved yet'):null)));
+  p.replaceChildren(...kids);
+}
+async function save(){
+  const who=whoPerson();if(!who){toast('Choose your name first.');$('#who').classList.add('need');return;}
+  const d=draft();S.saving=true;renderMine();
+  try{const r=await rpc('avail_save',{p:S.mgr||auth(),token:dev.token,month_in:S.month,staff_id_in:who.id,staff_name_in:who.name,days_in:d.days,note_in:d.note||''});
+    S.mine=r;S.draft=null;S.dirty=false;if(!S.submitted.includes(who.id))S.submitted.push(who.id);toast(Object.keys(r.days||{}).length?'Saved. Thank you!':'Saved — available all month. Thank you!');
+  }catch(e){toast(errText(e));if(e.code==='locked'){S.locked=true;}}
+  S.saving=false;renderMine();
+}
+window.addEventListener('beforeunload',e=>{if(S.dirty){e.preventDefault();e.returnValue='';}});
+
+// ---------- team (manager) ----------
+async function loadTeam(){
+  if(!S.mgr)return;S.team.loading=true;S.team.month=S.month;renderTeam();
+  try{const b=await rpc('avail_export',{p:S.mgr,month_in:S.month});if(b.month!==S.month)return;S.team.rows=b.rows||[];S.team.staff=b.staff||S.staff;S.team.locked=b.locked;S.team.deadline=b.deadline;}
+  catch(e){toast(errText(e));}
+  S.team.loading=false;renderTeam();
+}
+function chaseText(missing){return `Hi team! Reminder: please fill in your availability for ${fmtMonth(S.month)} before ${fmtDate(deadlineOf(S.month),{weekday:'long',day:'numeric',month:'long'})} 🙏\n${location.origin}/availability${S.key?'#k='+S.key:''}\n\nStill missing: ${missing.join(', ')}.\nIf you have nothing to add, just open it and press Save.`;}
+async function copyText(t){try{await navigator.clipboard.writeText(t);toast('Copied. Paste it in the HR Nonna group chat.');}catch(e){prompt('Copy this:',t);}}
+function renderTeam(){
+  const p=$('#p-team');if(!S.mgr){p.replaceChildren();return;}
+  const T=S.team;const kids=[h('div',{class:'cardhead'},h('h2',{},`Team · ${fmtMonth(S.month)}`),h('span',{class:'small muted'},`Deadline ${fmtDate(T.deadline||deadlineOf(S.month))}${T.locked?' · locked':' · open'}`))];
+  if(T.loading||!T.rows){kids.push(h('p',{class:'lede'},'Loading…'));p.replaceChildren(...kids);return;}
+  const staff=T.staff||S.staff;const byId=new Map(T.rows.map(r=>[r.staffId,r]));
+  const missing=staff.filter(s=>!byId.has(s.id)).map(s=>s.name);
+  kids.push(h('div',{class:'card '+(missing.length?'goldbox':'okbox')},
+    h('div',{class:'cardhead'},h('h3',{},missing.length?`${staff.length-missing.length} of ${staff.length} sent in`:'Everyone has sent in ✓'),
+      missing.length?h('button',{type:'button',class:'btn small',onclick:()=>copyText(chaseText(missing))},'Copy reminder message'):null),
+    missing.length?h('p',{class:'lede',style:'margin:0'},'Still missing: '+missing.join(', ')):null));
+  const rows=staff.map(s=>{const r=byId.get(s.id);const days=r?Object.entries(r.days||{}).sort():[];
+    return h('tr',{class:'click'+(T.sel===s.id?' sel':''),onclick:()=>{T.sel=T.sel===s.id?null:s.id;renderTeam();}},
+      h('td',{},h('b',{},s.name)),
+      h('td',{},r?h('span',{class:'chip'},'Sent in'):h('span',{class:'chip warn'},'Missing')),
+      h('td',{},r?fmtTime(r.updatedAt)+(r.byManager?' (mgmt)':''):'—'),
+      h('td',{},r?(days.length?h('div',{class:'dayline'},...days.map(([iso,st])=>h('span',{class:'dtag '+st},`${fmtShort(iso)} · ${LABEL[st]}`))):h('span',{class:'muted'},'Available all month')):''),
+      h('td',{},r&&r.note?r.note:''));});
+  kids.push(h('div',{class:'card'},h('div',{style:'overflow-x:auto'},h('table',{class:'grid'},
+    h('thead',{},h('tr',{},h('th',{},'Name'),h('th',{},'Status'),h('th',{},'Last saved'),h('th',{},"Can't work"),h('th',{},'Note'))),
+    h('tbody',{},...rows))),
+    h('div',{class:'row'},
+      h('button',{type:'button',class:'btn ghost small',onclick:loadTeam},'Refresh'),
+      h('button',{type:'button',class:'btn ghost small',onclick:()=>{const lines=[['Name','Status','Last saved','Date','Unavailable','Note']];for(const s of staff){const r=byId.get(s.id);if(!r){lines.push([s.name,'Missing','','','','']);continue;}const ds=Object.entries(r.days||{}).sort();if(!ds.length)lines.push([s.name,'Sent in',fmtTime(r.updatedAt),'','Available all month',r.note||'']);for(const [iso,st] of ds)lines.push([s.name,'Sent in',fmtTime(r.updatedAt),iso,LABEL[st],r.note||'']);}
+        const csv=lines.map(l=>l.map(x=>'"'+String(x).replace(/"/g,'""')+'"').join(';')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['﻿'+csv],{type:'text/csv'}));a.download=`availability-${S.month}.csv`;a.click();}},'Download CSV'),
+      T.sel?h('button',{type:'button',class:'btn small',onclick:()=>{S.who=T.sel;lsSet('ngc-avail-who',S.who);S.tab='mine';lsSet('ngc-avail-tab','mine');S.draft=null;S.dirty=false;S.mine=null;renderAll();refresh();}},`Edit ${(staff.find(s=>s.id===T.sel)||{}).name||''} as management`):null),
+    h('p',{class:'small muted',style:'margin:0'},'Tap a name, then "Edit as management" to change someone\'s days after the deadline. The planner imports this list on the 11th.')));
+  p.replaceChildren(...kids);
+}
+
+// ---------- render all ----------
+function renderAll(){renderShell();renderMine();if(S.tab==='team')renderTeam();}
+
+// ---------- login ----------
+function logout(){const viaLink=!S.code&&!!S.key;S.code=null;S.key=null;S.mgr=null;delete dev.code;delete dev.mgr;saveDev();
+  try{localStorage.removeItem('ngc-checks-key');}catch(e){}if(/[#&]k=/.test(location.hash))history.replaceState(null,'',location.pathname);
+  S.loaded=false;S.mine=null;S.draft=null;S.dirty=false;S.team.rows=null;renderAll();if(viaLink)$('#g-msg').textContent='This link no longer works. Ask the manager for the new staff link.';}
+function logoutMgr(){S.mgr=null;delete dev.mgr;saveDev();S.team.rows=null;if(S.tab==='team')S.tab='mine';renderAll();}
+$('#logout-btn').addEventListener('click',logout);
+$('#gate-form').addEventListener('submit',async e=>{
+  e.preventDefault();const code=$('#g-code').value.trim();if(!code)return;$('#g-msg').textContent='Checking…';
+  try{const kind=await rpc('check_code',{p:code});
+    if(!kind){$('#g-msg').textContent='That team code is not right.';return;}
+    S.code=code;dev.code=code;if(kind==='manager'){S.mgr=code;dev.mgr=code;}saveDev();$('#g-code').value='';$('#g-msg').textContent='';renderAll();await refresh();
+  }catch(err){$('#g-msg').textContent=errText(err);}
+});
+$('#mgr-btn').addEventListener('click',async()=>{
+  if(S.mgr){logoutMgr();toast('Logged out of management');return;}
+  const pw=prompt('Manager password');if(!pw)return;
+  try{const kind=await rpc('check_code',{p:pw});if(kind!=='manager'){toast('That password is not right.');return;}
+    S.mgr=pw;dev.mgr=pw;saveDev();S.tab='team';lsSet('ngc-avail-tab','team');renderAll();loadTeam();
+  }catch(e){toast(errText(e));}
+});
+
+// ---------- sync ----------
+let refreshing=null;
+async function refresh(){
+  if(!auth()||!CFG.url)return;if(refreshing)return refreshing;
+  refreshing=(async()=>{
+    try{const month=S.month,who=S.who;const b=await rpc('avail_open',{p:auth(),month_in:month,staff_id_in:who||''});
+      if(month!==S.month||who!==S.who)return;
+      S.staff=b.staff||[];S.submitted=b.submitted||[];S.deadline=b.deadline;S.locked=!!b.locked;S.loaded=true;S.offline=false;
+      if(!S.dirty){S.mine=b.mine||null;S.draft=null;}
+    }catch(e){if(e.code==='bad_code')logout();else S.offline=true;}
+    if(!S.saving)renderAll();
+  })();
+  try{await refreshing;}finally{refreshing=null;}
+}
+window.addEventListener('hashchange',()=>{const m=/[#&]k=([A-Za-z0-9_-]{16,})/.exec(location.hash||'');if(!m||m[1]===S.key)return;
+  S.key=m[1];lsSet('ngc-checks-key',m[1]);$('#g-msg').textContent='';S.loaded=false;renderAll();refresh();});
+async function boot(){
+  renderAll();if(!CFG.url||!CFG.key){$('#g-msg').textContent='The database connection is missing.';return;}
+  if(auth())await refresh();
+  if(S.mgr&&S.tab==='team')loadTeam();
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&!S.dirty)refresh();});
+}
+boot();
+</script>
+</body>
+</html>

@@ -30,3 +30,14 @@ Fridge and freezer temperatures (opening and closing), daily cleaning tasks and 
 - Uses the same Supabase project, team code, manager password and team list as the Stars board. A phone already logged in on /stars is logged in here too.
 - Staff open it with the private staff link (`/checks#k=…`), so they don't type a code. Only a hash of the link key is stored; the key only opens the checks (not Stars, not History). Management can make a new link in History, which switches off the old one. The team code and manager password still work too.
 - Staff log checks for today (or yesterday, for closing after midnight) and can undo a mis-tap within 10 minutes. Management sees History (any date range), can remove wrong entries, download a CSV for Excel or print.
+
+## Availability (live on Vercel at /availability)
+
+Every month, each person marks the days of the next month they can't work (whole day, lunch only or evening only) and may add a note.
+
+- Deadline: the **10th of the month before** (January → 10 December). From the 11th the month is locked for staff; management can still edit it. Schedules go out by the 15th.
+- `availability/index.html` — the page (one file, no build step).
+- `availability/availability-setup.sql` — run once in Supabase > SQL Editor, after the Stars and Checks SQL. Safe to run again. Not deployed.
+- Same Supabase project, staff link (`#k=…`, the checks link key works here too), team code, manager password and team list as the Checks and Stars pages.
+- Management: Manager login → Team tab shows who sent in and who is missing, a reminder message to copy into HR Nonna, a CSV download, and "Edit as management" after the deadline.
+- The planner imports the submissions on the 11th with a private export key (`avail_export`), then the draft schedule is built in the Nonna Staff Planner.
