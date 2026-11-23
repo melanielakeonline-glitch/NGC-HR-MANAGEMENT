@@ -192,7 +192,7 @@ const MONTHS=[thisMonth,addMonths(thisMonth,1),addMonths(thisMonth,2)];
 const defaultMonth=()=>MONTHS.find(m=>today<=deadlineOf(m))||MONTHS[1];
 const S={code:dev.code||null,key:linkKey||null,mgr:dev.mgr||null,month:lsGet('ngc-avail-month')||defaultMonth(),tab:lsGet('ngc-avail-tab')||'mine',
   who:lsGet('ngc-checks-who')||lsGet('ngc-avail-who')||'',staff:[],submitted:[],mine:null,locked:false,deadline:null,loaded:false,offline:false,
-  draft:null,dirty:false,saving:false,team:{month:null,rows:null,loading:false,sel:null}};
+  draft:null,dirty:false,saving:false,setup:false,team:{month:null,rows:null,loading:false,sel:null}};
 if(!MONTHS.includes(S.month))S.month=defaultMonth();
 
 const auth=()=>S.code||S.key;
@@ -232,7 +232,7 @@ function renderShell(){
   $('#tabs').replaceChildren(...tabs.map(([id,l])=>h('button',{type:'button',role:'tab','aria-selected':String(S.tab===id),onclick:()=>{S.tab=id;lsSet('ngc-avail-tab',id);renderAll();window.scrollTo({top:0});if(id==='team'&&!S.team.rows)loadTeam();}},l)));
   $('#p-mine').hidden=S.tab!=='mine';$('#p-team').hidden=S.tab!=='team';
   $('#mgr-btn').textContent=S.mgr?'Manager: log out':'Manager login';
-  $('#offline').hidden=!S.offline;
+  $('#offline').hidden=!S.offline&&!S.setup;$('#offline').textContent=S.setup?'The availability database is not set up yet: the manager needs to run availability-setup.sql in Supabase (SQL Editor). The page will work right after.':"Can't reach the database right now. Try again in a moment.";
   document.body.classList.toggle('wide',S.tab==='team');
 }
 $('#who').addEventListener('change',e=>{if(S.dirty&&!confirm('You have unsaved changes. Switch name without saving?')){e.target.value=S.who;return;}S.who=e.target.value;lsSet('ngc-avail-who',S.who);e.target.classList.remove('need');S.draft=null;S.dirty=false;S.mine=null;renderAll();refresh();});
@@ -361,7 +361,7 @@ async function refresh(){
       if(month!==S.month||who!==S.who)return;
       S.staff=b.staff||[];S.submitted=b.submitted||[];S.deadline=b.deadline;S.locked=!!b.locked;S.loaded=true;S.offline=false;
       if(!S.dirty){S.mine=b.mine||null;S.draft=null;}
-    }catch(e){if(e.code==='bad_code')logout();else S.offline=true;}
+    }catch(e){if(e.code==='bad_code')logout();else if(String(e.code||'').startsWith('Could not find the function'))S.setup=true;else S.offline=true;}
     if(!S.saving)renderAll();
   })();
   try{await refreshing;}finally{refreshing=null;}
