@@ -83,6 +83,11 @@ textarea{resize:vertical;min-height:84px}
 .chip{font:700 11px var(--body);letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:999px;background:var(--basil-soft);color:var(--basil)}
 .chip.red{background:var(--tomato-soft);color:var(--tomato)}
 .chip.gold{background:var(--gold-soft);color:var(--gold)}
+.turnout{display:grid;gap:8px}
+.turnout .names{display:flex;flex-wrap:wrap;gap:6px;margin:0;padding:0;list-style:none}
+.turnout .names li{font-size:13px;padding:3px 10px;border-radius:999px;background:var(--bg);border:1px solid var(--line)}
+.turnout .names.missing li{background:var(--tomato-soft);border-color:transparent;color:var(--tomato);font-weight:600}
+.turnout h4{margin:0;font-size:13px;font-weight:700}
 .empty{padding:18px;border:1.5px dashed var(--line);border-radius:12px;color:var(--muted);text-align:center}
 .star{display:grid;gap:4px;padding:14px 0;border-top:1px solid var(--line)}
 .star:first-child{border-top:0;padding-top:0}
@@ -360,6 +365,7 @@ figure .rx-bar{justify-content:center}
         <div class="card">
           <h3>Team vote</h3>
           <p class="muted" id="mg-vote-status" style="margin:0"></p>
+          <div id="mg-turnout" class="turnout" hidden></div>
           <div class="row"><button class="btn small" type="button" id="mg-vote-open">Open voting for 3 days</button><button class="btn small ghost" type="button" id="mg-vote-close">Close voting now</button></div>
         </div>
         <div class="card">
@@ -674,6 +680,25 @@ function renderManager(){
   for(const v of ['month','board','team','reviews'])$('#mv-'+v).hidden=v!==S.mv;
   renderMonth();renderBoard();renderTeam();renderReviews();
 }
+// Who has voted this month (never who they voted for), so the manager can remind the rest.
+function renderTurnout(M,st,vs){
+  const box=$('#mg-turnout');
+  if(vs==='not-started'){box.hidden=true;box.replaceChildren();return;}
+  const voted=new Set(S.votes.filter(v=>v.ballots&&v.ballots[M]).map(v=>v.me));
+  const team=rosterFor(st);
+  const done=team.filter(p=>voted.has(p.id)),todo=team.filter(p=>!voted.has(p.id));
+  const names=(list,cls)=>h('ul',{class:'names'+(cls?' '+cls:'')},...list.map(p=>h('li',{},p.name)));
+  const kids=[h('p',{style:'margin:0'},h('b',{},`${done.length} of ${team.length} voted`),` · ${storeName(st)}`)];
+  if(todo.length){
+    kids.push(h('h4',{},vs==='open'?'Still to vote':'Did not vote'),names(todo,'missing'));
+    if(vs==='open'){
+      const msg=`Reminder: voting for Employee of the Month (${monthName(M)}) closes on ${fmtWhen(S.settings.closesAt)}. Still to vote: ${todo.map(p=>p.name).join(', ')}. Open ${location.origin}/stars, tap Employee and pick your name.`;
+      kids.push(h('div',{class:'row'},h('button',{class:'btn small ghost',type:'button',onclick:async()=>{try{await navigator.clipboard.writeText(msg);toast('Reminder copied. Paste it in the team chat.');}catch(e){prompt('Copy this reminder:',msg);}}},'Copy reminder for the team chat')));
+    }
+  }else if(team.length)kids.push(h('p',{class:'muted',style:'margin:0'},'Everyone has voted.'));
+  if(done.length)kids.push(h('h4',{},'Voted'),names(done));
+  box.replaceChildren(...kids);box.hidden=false;
+}
 function renderMonth(){
   const M=S.mgMonth,st=S.store;const mi=$('#mg-month');if(document.activeElement!==mi)mi.value=M;
   const t=tally(M,st);const vs=voteState(M);const steps=monthSteps(M,st);
@@ -688,6 +713,7 @@ function renderMonth(){
   $('#mg-vote-open').hidden=vs==='open';$('#mg-vote-open').disabled=!!other;
   $('#mg-vote-open').textContent=vs==='closed'?'Reopen for 3 days':'Open voting for 3 days';
   $('#mg-vote-close').hidden=vs!=='open';
+  renderTurnout(M,st,vs);
   // scorecard
   $('#mg-score-title').textContent=`Scorecard · ${monthName(M)} · ${storeName(st)}`;
   const pm=(S.planner.months||{})[`${M}_${st}`];
